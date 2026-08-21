@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arb Bot — Paper Trading</title>
+<style>
+  :root {
+    --bg: #0a0c10;
+    --panel: #12151b;
+    --border: #1f242e;
+    --text: #e8eaed;
+    --dim: #7b8494;
+    --sol-purple: #9945FF;
+    --sol-green: #14F195;
+    --loss: #ff5c5c;
+    --warn: #ffb84d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+    padding: 20px 16px 60px;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  h1 {
+    font-size: 18px;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+  h1 span {
+    background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .updated {
+    font-size: 11px;
+    color: var(--dim);
+  }
+  .breaker-banner {
+    display: none;
+    background: rgba(255, 92, 92, 0.1);
+    border: 1px solid var(--loss);
+    color: var(--loss);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .card .label {
+    font-size: 10px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .card .value {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .value.positive { color: var(--sol-green); }
+  .value.negative { color: var(--loss); }
+  .value.neutral { color: var(--text); }
+  section {
+    margin-bottom: 28px;
+  }
+  section h2 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    text-align: left;
+    color: var(--dim);
+    font-weight: 500;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+  .status-filled { color: var(--sol-green); }
+  .status-failed_fill { color: var(--loss); }
+  .status-partial_fill { color: var(--warn); }
+  .pnl-pos { color: var(--sol-green); }
+  .pnl-neg { color: var(--loss); }
+  .empty {
+    color: var(--dim);
+    font-size: 13px;
+    padding: 20px 0;
+    text-align: center;
+  }
+  footer {
+    color: var(--dim);
+    font-size: 11px;
+    text-align: center;
+    margin-top: 40px;
+    line-height: 1.6;
+  }
+  .loading { color: var(--dim); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span>◎</span> Arb Bot — Paper Trading</h1>
+  <div class="updated" id="updated">loading…</div>
+</header>
+
+<div class="breaker-banner" id="breakerBanner">
+  ⚠ Circuit breaker tripped — bot paused after consecutive losses. Reset manually after review.
+</div>
+
+<div class="grid" id="statsGrid">
+  <div class="loading">Loading stats…</div>
+</div>
+
+<section>
+  <h2>Recent Trades</h2>
+  <div id="tradesContainer"><div class="loading">Loading trades…</div></div>
+</section>
+
+<footer>
+  Paper trading only — no real funds are used.<br>
+  Data refreshes each time the bot runs (~every 5 min).
+</footer>
+
+<script>
+async function loadDashboard() {
+  try {
+    // state.json is copied into docs/ by the GitHub Actions workflow after each run
+    const res = await fetch('./state.json?t=' + Date.now());
+    if (!res.ok) throw new Error('state.json not found yet — run the workflow at least once');
+    const state = await res.json();
+    render(state);
+  } catch (err) {
+    document.getElementById('statsGrid').innerHTML =
+      '<div class="empty">No data yet. Run the GitHub Action at least once, then refresh.<br><br>' + err.message + '</div>';
+    document.getElementById('tradesContainer').innerHTML = '';
+  }
+}
+
+function render(state) {
+  document.getElementById('updated').textContent =
+    'balance updated from latest run';
+
+  if (state.circuit_breaker_tripped) {
+    document.getElementById('breakerBanner').style.display = 'block';
+  }
+
+  const roiPct = (((state.balance_usd - state.starting_balance_usd) / state.starting_balance_usd) * 100).toFixed(3);
+  const total = state.total_trades || 0;
+  const failed = state.failed_trades || 0;
+  const successRate = total > 0 ? (((total - failed) / total) * 100).toFixed(1) : '—';
+
+  const stats = [
+    { label: 'Balance', value: '$' + state.balance_usd.toFixed(2), cls: 'neutral' },
+    { label: 'Total P&L', value: (state.total_profit_usd >= 0 ? '+' : '') + '$' + state.total_profit_usd.toFixed(2),
+      cls: state.total_profit_usd >= 0 ? 'positive' : 'negative' },
+    { label: 'ROI', value: (roiPct >= 0 ? '+' : '') + roiPct + '%', cls: roiPct >= 0 ? 'positive' : 'negative' },
+    { label: 'Total Trades', value: total, cls: 'neutral' },
+    { label: 'Fill Success Rate', value: successRate + '%', cls: 'neutral' },
+    { label: 'Failed Fills', value: failed, cls: failed > 0 ? 'negative' : 'neutral' },
+  ];
+
+  document.getElementById('statsGrid').innerHTML = stats.map(s => `
+    <div class="card">
+      <div class="label">${s.label}</div>
+      <div class="value ${s.cls}">${s.value}</div>
+    </div>
+  `).join('');
+
+  const trades = (state.trades || []).slice(-20).reverse();
+  if (trades.length === 0) {
+    document.getElementById('tradesContainer').innerHTML = '<div class="empty">No trades yet.</div>';
+    return;
+  }
+
+  const rows = trades.map(t => {
+    const time = new Date(t.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' });
+    const pnlClass = t.profit_usd >= 0 ? 'pnl-pos' : 'pnl-neg';
+    const statusClass = 'status-' + (t.status || 'filled');
+    const statusLabel = (t.status || 'filled').replace('_', ' ');
+    return `
+      <tr>
+        <td>${time}</td>
+        <td>${t.pair}</td>
+        <td class="${statusClass}">${statusLabel}</td>
+        <td class="${pnlClass}">${t.profit_usd >= 0 ? '+' : ''}$${t.profit_usd.toFixed(4)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  document.getElementById('tradesContainer').innerHTML = `
+    <table>
+      <thead><tr><th>Time (IST)</th><th>Pair</th><th>Status</th><th>P&L</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+loadDashboard();
+</script>
+
+</body>
+</html>
