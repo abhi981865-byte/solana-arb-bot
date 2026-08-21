@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1003.7762,
+  "balance_usd": 1003.7742,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -145,13 +145,25 @@
       "net_spread_pct": 2.1766,
       "status": "partial_fill",
       "profit_usd": 1.7413
+    },
+    {
+      "timestamp": "2026-08-21T11:57:29.649808+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora DLMM",
+      "sell_dex": "Raydium",
+      "buy_price": 0.1805479,
+      "sell_price": 0.18634109999999998,
+      "trade_size_usd": 100,
+      "net_spread_pct": 2.5587,
+      "status": "failed_fill",
+      "profit_usd": -0.002
     }
   ],
-  "total_trades": 12,
-  "total_profit_usd": 3.7762,
-  "failed_trades": 5,
+  "total_trades": 13,
+  "total_profit_usd": 3.7742,
+  "failed_trades": 6,
   "partial_fill_trades": 3,
-  "consecutive_losses": 0,
+  "consecutive_losses": 1,
   "circuit_breaker_tripped": false,
   "circuit_breaker_tripped_at": null
 }
