@@ -1,0 +1,12 @@
+{
+  "balance_usd": 1000.0,
+  "starting_balance_usd": 1000.0,
+  "trades": [],
+  "total_trades": 0,
+  "total_profit_usd": 0.0,
+  "failed_trades": 0,
+  "partial_fill_trades": 0,
+  "consecutive_losses": 0,
+  "circuit_breaker_tripped": false,
+  "circuit_breaker_tripped_at": null
+}
