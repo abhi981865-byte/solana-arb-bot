@@ -44,8 +44,8 @@ STATE_PATH = os.path.join(os.path.dirname(__file__), "data", "live_state.json")
 
 # --- Hard safety gates (all must pass) ---
 ENABLE_LIVE_TRADING = os.environ.get("ENABLE_LIVE_TRADING", "false").lower() == "true"
-MAX_TRADE_SIZE_USD = float(os.environ.get("MAX_TRADE_SIZE_USD", "10"))
-MAX_DAILY_LOSS_USD = float(os.environ.get("MAX_DAILY_LOSS_USD", "20"))
+MAX_TRADE_SIZE_USD = float(os.environ.get("MAX_TRADE_SIZE_USD") or "10")
+MAX_DAILY_LOSS_USD = float(os.environ.get("MAX_DAILY_LOSS_USD") or "20")
 FIRST_TRADE_CONFIRMATION_USD = 5.0  # the very first live trade ever is capped here, regardless of other settings
 
 
