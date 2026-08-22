@@ -16,8 +16,8 @@ from datetime import datetime, timezone
 
 from price_scanner import scan_all_pairs
 from spread_detector import scan_for_opportunities, scan_for_opportunities_multi_size
-from paper_trader import process_opportunities, get_summary, load_state, check_circuit_breaker
-from telegram_notifier import send_message, format_opportunity_alert, format_summary, format_weekly_report
+from paper_trader import process_opportunities, get_summary, load_state, check_circuit_breaker, reset_circuit_breaker, save_state
+from telegram_notifier import send_message, format_opportunity_alert, format_summary, format_weekly_report , check_for_reset_command
 import real_trader
 
 TRADE_SIZE_USD = 100  # primary simulated trade size used for paper trading
@@ -38,6 +38,17 @@ def run():
 
     # --- Check circuit breaker BEFORE scanning — no point burning API calls if paused ---
     existing_state = load_state()
+# --- Check Telegram for a /reset command before doing anything else ---
+    last_update_id = existing_state.get("telegram_last_update_id", 0)
+    reset_requested, new_last_update_id = check_for_reset_command(last_update_id)
+    existing_state["telegram_last_update_id"] = new_last_update_id
+
+    if reset_requested and existing_state.get("circuit_breaker_tripped"):
+        reset_circuit_breaker(existing_state)
+        send_message("✅ Circuit breaker reset via Telegram — bot resuming.")
+        existing_state = load_state()
+    else:
+        save_state(existing_state)
     if check_circuit_breaker(existing_state):
         print("[main] Circuit breaker is tripped. Skipping this run. "
               "Review data/state.json and call reset_circuit_breaker() manually to resume.")
