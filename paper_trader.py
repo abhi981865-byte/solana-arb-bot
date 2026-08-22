@@ -48,6 +48,7 @@ def _default_state() -> dict:
         "pair_stats": {},                              # NEW: per-pair win/loss counts
         "circuit_breaker_tripped": False,
         "circuit_breaker_tripped_at": None,
+        "last_error": None,  # NEW: last crash/scanner error, so it can be queried via Telegram
     }
 
 
@@ -252,4 +253,3 @@ def get_summary(state: dict) -> dict:
         "circuit_breaker_tripped": state.get("circuit_breaker_tripped", False),
         "circuit_breaker_cooldown_elapsed": circuit_breaker_cooldown_elapsed(state),  # NEW
     }
-
