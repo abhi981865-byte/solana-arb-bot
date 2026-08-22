@@ -48,7 +48,7 @@ def load_state():
     state.setdefault("partial_fill_trades", 0)
     state.setdefault("consecutive_losses", 0)
     state.setdefault("circuit_breaker_tripped", False)
-    state.setdefault("circuit_breaker_tripped_at", None)
+    state.setdefault("circuit_breaker_tripped_at", None) "telegram_last_update_id": 0,
     return state
 
 
