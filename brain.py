@@ -42,6 +42,7 @@ real money."""
 # Match is case-insensitive and ignores a leading "/". Add more here as needed.
 RESET_COMMANDS = {"reset", "resume", "unpause"}
 STATUS_COMMANDS = {"status", "balance", "summary"}
+ERROR_COMMANDS = {"error", "errors", "lasterror", "last error", "bug", "issue"}
 
 
 def fetch_new_messages(last_update_id: int) -> list:
@@ -128,6 +129,19 @@ def try_handle_command(state: dict, text: str) -> str | None:
             f"Total profit: ${summary['total_profit_usd']}\n"
             f"ROI: {summary['roi_pct']}%\n"
             f"Circuit breaker: {breaker}"
+        )
+
+    if normalized in ERROR_COMMANDS:
+        last_error = state.get("last_error")
+        if not last_error:
+            return "✅ Koi error record nahi hai abhi tak — sab theek chal raha hai."
+        return (
+            f"🐞 Last Error:\n"
+            f"Type: {last_error.get('type')}\n"
+            f"Message: {last_error.get('message')}\n"
+            f"Mode: {last_error.get('mode', 'scan')}\n"
+            f"Time: {last_error.get('at')}\n\n"
+            f"Traceback (partial):\n{last_error.get('traceback', '')[-500:]}"
         )
 
     return None  # not a command — let the LLM handle it
