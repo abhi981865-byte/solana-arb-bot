@@ -49,6 +49,25 @@ def sync_dashboard_data() -> None:
         shutil.copy(DATA_STATE_PATH, DOCS_STATE_PATH)
 
 
+def record_error(state: dict, error_type: str, message: str, mode: str = "scan", tb: str = "") -> None:
+    """
+    Saves the most recent error into state so it can be asked about on
+    Telegram later (e.g. typing "error"). Keeps only the last one — enough
+    to answer "what broke" without bloating state.json.
+    """
+    state["last_error"] = {
+        "type": error_type,
+        "message": message[:300],
+        "mode": mode,
+        "at": datetime.now(timezone.utc).isoformat(),
+        "traceback": tb[-1500:] if tb else "",
+    }
+    try:
+        save_state(state)
+    except Exception as e:
+        print(f"[main] Failed to save error to state: {e}")
+
+
 def check_chat(state: dict) -> dict:
     """
     Checks for new Telegram messages and replies via the brain, if it's
@@ -102,6 +121,7 @@ def run() -> None:
             "Check the Actions log for details."
         )
         print(f"[main] ERROR: {error_msg}")
+        record_error(existing_state, "scanner_error", "Zero price data for ALL pairs — Jupiter API may be down or format changed.", mode="scan")
         send_message(error_msg)
         sync_dashboard_data()
         return
@@ -195,6 +215,11 @@ if __name__ == "__main__":
         print(f"[main] UNHANDLED ERROR:\n{tb}")
         error_summary = f"{type(e).__name__}: {str(e)}"[:300]
         try:
+            crash_state = load_state()
+            record_error(crash_state, type(e).__name__, str(e), mode=mode, tb=tb)
+        except Exception as record_err:
+            print(f"[main] Also failed to record error to state: {record_err}")
+        try:
             send_message(
                 f"🔴 <b>Bot Crashed</b>\nMode: {mode}\nError: {error_summary}\n\n"
                 "Check GitHub Actions logs for full traceback."
@@ -202,5 +227,3 @@ if __name__ == "__main__":
         except Exception as notify_err:
             print(f"[main] Also failed to send crash alert to Telegram: {notify_err}")
         raise  # re-raise so the GitHub Actions run shows as failed, not green
-
-
