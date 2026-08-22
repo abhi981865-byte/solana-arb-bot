@@ -261,5 +261,11 @@
   "partial_fill_trades": 3,
   "consecutive_losses": 3,
   "circuit_breaker_tripped": true,
-  "circuit_breaker_tripped_at": "2026-08-21T15:23:20.208870+00:00"
+  "circuit_breaker_tripped_at": "2026-08-21T15:23:20.208870+00:00",
+  "peak_balance_usd": 1000.0,
+  "max_drawdown_pct": 0.0,
+  "best_trade_usd": 0.0,
+  "worst_trade_usd": 0.0,
+  "pair_stats": {},
+  "telegram_last_update_id": 595275907
 }
