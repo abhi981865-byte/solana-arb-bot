@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1009.4207,
+  "balance_usd": 1011.393,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -313,13 +313,37 @@
       "net_spread_pct": 1.6096,
       "status": "failed_fill",
       "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-23T07:54:24.648275+00:00",
+      "pair": "JUP/USDC",
+      "buy_dex": "Raydium",
+      "sell_dex": "Meteora DLMM",
+      "buy_price": 0.19538613999999999,
+      "sell_price": 0.19749514,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.4294,
+      "status": "filled",
+      "profit_usd": 0.4294
+    },
+    {
+      "timestamp": "2026-08-23T07:54:24.648302+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora DLMM",
+      "sell_dex": "Raydium",
+      "buy_price": 0.1860058,
+      "sell_price": 0.19008465000000002,
+      "trade_size_usd": 100,
+      "net_spread_pct": 1.5429,
+      "status": "filled",
+      "profit_usd": 1.5429
     }
   ],
-  "total_trades": 26,
-  "total_profit_usd": 9.4207,
+  "total_trades": 28,
+  "total_profit_usd": 11.393,
   "failed_trades": 12,
   "partial_fill_trades": 4,
-  "consecutive_losses": 1,
+  "consecutive_losses": 0,
   "circuit_breaker_tripped": false,
   "circuit_breaker_tripped_at": null,
   "peak_balance_usd": 1000.0,
@@ -327,7 +351,7 @@
   "best_trade_usd": 0.0,
   "worst_trade_usd": 0.0,
   "pair_stats": {},
-  "telegram_last_update_id": 595275919,
+  "telegram_last_update_id": 595275920,
   "last_error": null,
   "chat_history": [
     {
@@ -369,6 +393,14 @@
     {
       "role": "assistant",
       "content": "Haan, scan bilkul chal raha hai! \ud83d\ude80 Bot ka circuit\u2011breaker false hai, balance $\u22481009\u202fUSD hai aur har\u202ffew\u202fseconds\u202fnaye\u202fpairs (JUP/USDC, WIF/USDC, SOL/USDT) ke spread ko scan karke arbitrage try kar raha hai. Recent trades mein \u201cfailed_fill\u201d aur \u201cpartial_fill\u201d entries dikh rahi hain, matlab scan ho raha hai lekin kuch trades spread ya liquidity ki wajah se poore nahi ho pa rahe. Agar aapko lagta hai ki spread threshold ya trade size ko tweak karna chahiye, bata dijiye!"
+    },
+    {
+      "role": "user",
+      "content": "ye sab tum khud seekh jao or apply karo\n1. Spread\u202fthreshold\u202ftune\u202fkarein \u2013abhi\u202fminimum\u202fnet\u202fspread\u202f\u2248\u202f0.2\u20110.3\u202f%\u202fset hai, isliye bahut saare \u201cfailed_fill\u201d aate hain (JUP/USDC ka\u202f0.13\u20110.33\u202f% spread fail ho raha). Thoda\u202flower\u202fkarke (e.g.,\u202f0.15\u202f%\u202fya\u202f0.12\u202f%) try karein, lekin risk\u202fbhi\u202fbadhega \u2013 isliye pehle\u202fsmall\u202fsize\u202f(\u20b950\u2011\u20b980) se test karein.\n\n2. Trade\u2011size\u202fadjust\u202fkaren \u2013 100\u202fUSD ka size thin liquidity pools (Raydium \u2194\u202fMeteora) me slip kar sakta hai. Size ko 50\u201170\u202fUSD tak ghataane se\u202fpartial\u202f/\u202ffailed\u202ffills kam ho sakte hain aur ROI stable rahega.\n\n3. Liquidity\u2011pool\u202ffilter add karein \u2013 har trade se pehle pool depth (order\u2011book\u202fsize\u202f\u2265\u202f$5k\u202fya\u202f>\u202f0.5\u202f%\u202fof\u202ftrade\u2011size) check karein. Agar depth kam ho, us pair ko skip kar dein; aap \u201cJUP/USDC\u201d ke liye recent depth ko monitor kar sakte hain.\n\n4. Dynamic\u202fDEX\u2011selection \u2013 abhi fixed \u201cbuy\u2011dex\u201d\u202f=\u202fRaydium, \u201csell\u2011dex\u201d\u202f=\u202fMeteora. Agar ek side ka spread bahut tight ho, opposite direction flip karne ki logic add karein (buy\u202fMeteora\u202fsell\u202fRaydium) \u2013 isse successful arbitrage chances badhenge.\n\n5. Time\u2011of\u2011day filter \u2013 Solana market ke high\u2011volatility windows (e.g., 00:00\u201104:00\u202fUTC) me spreads rapidly change. Aap \u201cquiet"
+    },
+    {
+      "role": "assistant",
+      "content": "Bilkul! \ud83d\udc4d Aapke suggestions ko main \u201cpaper\u2011trading\u201d bot ke config\u202fmein incorporate kar raha hoon:\n\n|\u202fChange\u202f|\u202fNaya\u202fparameter\u202f|\u202fReason\u202f|\n|---|---|---|\n| **Spread\u202fthreshold** | `min_net_spread_pct = 0.15\u202f%` (optional lower to\u202f0.12\u202f% for testing) | JUP/USDC jaisi thin pairs ke liye ab \u201cfailed_fill\u201d kam hoga. |\n| **Trade\u2011size** | `default_trade_usd = 60` (\u2248\u202f\u20b95\u202fk) | 100\u202fUSD se slippage aata tha; 60\u202fUSD se partial\u202f/\u202ffailed\u202ffills expected\u202fkam. |\n| **Liquidity\u2011filter** | `min_pool_depth_usd = 5_000` **OR** `depth_pct_of_trade \u2265 0.5\u202f%` | Agar pool depth isse kam ho, us pair ko skip karenge. |\n| **Dynamic\u202fDEX\u2011selection** | `allow_flip = true` \u2013 agar `buy_dex` ka spread < `sell_dex` ka spread, bot ab opposite direction (buy\u202fMeteora\u202f/\u202fsell\u202fRaydium) try karega. |\n| **Time\u2011of\u2011day filter** | `quiet_hours_utc = (00:00\u201104:00)` \u2013 is window mein spread\u2011check ko \u201cskip\u201d ya \u201chigher\u2011threshold\u201d (0.25\u202f%) set karenge. |\n\n**Implementation ka short\u2011term plan**\n\n1. **Config reload** \u2013 aaj raat tak updated parameters load ho jayenge, isliye agle scan se hi effect dikhega.  \n2. **Monitoring** \u2013 har trade ke baad \u201cfailed_fill\u201d\u202f% aur \u201cpartial_fill\u201d\u202f% ko log karenge; 2\u20113\u202fdin ke baad ROI aur fill\u2011rate ka short report bhejunga.  \n3"
     }
   ],
   "learnings": []
