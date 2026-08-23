@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1017.4512,
+  "balance_usd": 1017.4472,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -409,15 +409,39 @@
       "net_spread_pct": 2.9799,
       "status": "failed_fill",
       "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-23T09:48:18.928691+00:00",
+      "pair": "JUP/USDC",
+      "buy_dex": "Raydium",
+      "sell_dex": "Meteora DLMM",
+      "buy_price": 0.19888796,
+      "sell_price": 0.20069140000000002,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.2568,
+      "status": "failed_fill",
+      "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-23T09:48:18.928716+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora DLMM",
+      "sell_dex": "Raydium",
+      "buy_price": 0.1860058,
+      "sell_price": 0.19258375,
+      "trade_size_usd": 100,
+      "net_spread_pct": 2.8864,
+      "status": "failed_fill",
+      "profit_usd": -0.002
     }
   ],
-  "total_trades": 34,
-  "total_profit_usd": 17.4512,
-  "failed_trades": 14,
+  "total_trades": 36,
+  "total_profit_usd": 17.4472,
+  "failed_trades": 16,
   "partial_fill_trades": 4,
-  "consecutive_losses": 1,
-  "circuit_breaker_tripped": false,
-  "circuit_breaker_tripped_at": null,
+  "consecutive_losses": 3,
+  "circuit_breaker_tripped": true,
+  "circuit_breaker_tripped_at": "2026-08-23T09:48:18.928723+00:00",
   "peak_balance_usd": 1000.0,
   "max_drawdown_pct": 0.0,
   "best_trade_usd": 0.0,
@@ -475,5 +499,10 @@
       "content": "Bilkul! \ud83d\udc4d Aapke suggestions ko main \u201cpaper\u2011trading\u201d bot ke config\u202fmein incorporate kar raha hoon:\n\n|\u202fChange\u202f|\u202fNaya\u202fparameter\u202f|\u202fReason\u202f|\n|---|---|---|\n| **Spread\u202fthreshold** | `min_net_spread_pct = 0.15\u202f%` (optional lower to\u202f0.12\u202f% for testing) | JUP/USDC jaisi thin pairs ke liye ab \u201cfailed_fill\u201d kam hoga. |\n| **Trade\u2011size** | `default_trade_usd = 60` (\u2248\u202f\u20b95\u202fk) | 100\u202fUSD se slippage aata tha; 60\u202fUSD se partial\u202f/\u202ffailed\u202ffills expected\u202fkam. |\n| **Liquidity\u2011filter** | `min_pool_depth_usd = 5_000` **OR** `depth_pct_of_trade \u2265 0.5\u202f%` | Agar pool depth isse kam ho, us pair ko skip karenge. |\n| **Dynamic\u202fDEX\u2011selection** | `allow_flip = true` \u2013 agar `buy_dex` ka spread < `sell_dex` ka spread, bot ab opposite direction (buy\u202fMeteora\u202f/\u202fsell\u202fRaydium) try karega. |\n| **Time\u2011of\u2011day filter** | `quiet_hours_utc = (00:00\u201104:00)` \u2013 is window mein spread\u2011check ko \u201cskip\u201d ya \u201chigher\u2011threshold\u201d (0.25\u202f%) set karenge. |\n\n**Implementation ka short\u2011term plan**\n\n1. **Config reload** \u2013 aaj raat tak updated parameters load ho jayenge, isliye agle scan se hi effect dikhega.  \n2. **Monitoring** \u2013 har trade ke baad \u201cfailed_fill\u201d\u202f% aur \u201cpartial_fill\u201d\u202f% ko log karenge; 2\u20113\u202fdin ke baad ROI aur fill\u2011rate ka short report bhejunga.  \n3"
     }
   ],
-  "learnings": []
+  "learnings": [
+    {
+      "at": "2026-08-23T09:48:20.041128+00:00",
+      "note": "Circuit breaker tripped after consecutive losses on: JUP/USDC, WIF/USDC. Check if these pairs/DEXs have a recurring fill-failure pattern before re-enabling at full size."
+    }
+  ]
 }
