@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1008.6281,
+  "balance_usd": 1008.9478,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -253,20 +253,55 @@
       "net_spread_pct": 2.2636,
       "status": "failed_fill",
       "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-23T06:50:32.020499+00:00",
+      "pair": "JUP/USDC",
+      "buy_dex": "Raydium",
+      "sell_dex": "Meteora DLMM",
+      "buy_price": 0.19474492000000002,
+      "sell_price": 0.19627055999999998,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.1334,
+      "status": "failed_fill",
+      "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-23T06:50:32.020523+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora DLMM",
+      "sell_dex": "Raydium",
+      "buy_price": 0.1860058,
+      "sell_price": 0.18796269999999998,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.4021,
+      "status": "partial_fill",
+      "profit_usd": 0.3217
     }
   ],
-  "total_trades": 21,
-  "total_profit_usd": 8.6281,
-  "failed_trades": 10,
-  "partial_fill_trades": 3,
-  "consecutive_losses": 3,
-  "circuit_breaker_tripped": true,
-  "circuit_breaker_tripped_at": "2026-08-21T15:23:20.208870+00:00",
+  "total_trades": 23,
+  "total_profit_usd": 8.9478,
+  "failed_trades": 11,
+  "partial_fill_trades": 4,
+  "consecutive_losses": 0,
+  "circuit_breaker_tripped": false,
+  "circuit_breaker_tripped_at": null,
   "peak_balance_usd": 1000.0,
   "max_drawdown_pct": 0.0,
   "best_trade_usd": 0.0,
   "worst_trade_usd": 0.0,
   "pair_stats": {},
-  "telegram_last_update_id": 595275909,
-  "last_error": null
+  "telegram_last_update_id": 595275915,
+  "last_error": null,
+  "chat_history": [
+    {
+      "role": "user",
+      "content": "kyu nhi chal rha"
+    },
+    {
+      "role": "assistant",
+      "content": "Brain se jawab lene mein error aa gaya: 404 Client Error: Not Found for url: https://api.groq.com/openai/v1/chat/completions"
+    }
+  ],
+  "learnings": []
 }
