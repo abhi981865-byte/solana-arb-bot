@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1064.7685,
+  "balance_usd": 1065.6976,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -1117,12 +1117,48 @@
       "net_spread_pct": 1.3643,
       "status": "partial_fill",
       "profit_usd": 1.0914
+    },
+    {
+      "timestamp": "2026-08-23T23:10:05.932351+00:00",
+      "pair": "SOL/USDT",
+      "buy_dex": "Raydium",
+      "sell_dex": "Meteora DLMM",
+      "buy_price": 94.76846880000001,
+      "sell_price": 95.3863214,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.002,
+      "status": "partial_fill",
+      "profit_usd": 0.0016
+    },
+    {
+      "timestamp": "2026-08-23T23:10:05.932377+00:00",
+      "pair": "JUP/USDC",
+      "buy_dex": "Raydium",
+      "sell_dex": "Meteora DLMM",
+      "buy_price": 0.21398869999999998,
+      "sell_price": 0.21578534000000002,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.1896,
+      "status": "partial_fill",
+      "profit_usd": 0.1517
+    },
+    {
+      "timestamp": "2026-08-23T23:10:05.932386+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora DLMM",
+      "sell_dex": "Raydium",
+      "buy_price": 0.1955075,
+      "sell_price": 0.1986743,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.9698,
+      "status": "partial_fill",
+      "profit_usd": 0.7758
     }
   ],
-  "total_trades": 93,
-  "total_profit_usd": 64.7685,
+  "total_trades": 96,
+  "total_profit_usd": 65.6976,
   "failed_trades": 31,
-  "partial_fill_trades": 11,
+  "partial_fill_trades": 14,
   "consecutive_losses": 0,
   "circuit_breaker_tripped": false,
   "circuit_breaker_tripped_at": null,
