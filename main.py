@@ -4,9 +4,13 @@ main.py
 Entry point run by GitHub Actions on a schedule. Scans prices, detects
 opportunities, executes paper trades, and sends Telegram alerts.
 
-Telegram commands (/reset, /status, /error, or free-form questions) are
-checked FIRST, before the circuit breaker gate — otherwise a tripped
-breaker would make the bot exit before it ever saw your /reset message.
+Telegram commands (/reset, /status, /error, /learnings, note:, or
+free-form questions) are checked FIRST, before the circuit breaker gate —
+otherwise a tripped breaker would make the bot exit before it ever saw
+your /reset message.
+
+When the circuit breaker trips, a learning note is auto-recorded so the
+bot's "brain" remembers the pattern for future conversations.
 
 IMPORTANT: Real trading is OFF by default. See real_trader.py for what it
 would take to enable it (multiple safety gates, all must be explicitly
@@ -21,7 +25,10 @@ from datetime import datetime, timezone
 
 from price_scanner import scan_all_pairs
 from spread_detector import scan_for_opportunities, scan_for_opportunities_multi_size
-from paper_trader import process_opportunities, get_summary, load_state, check_circuit_breaker, save_state
+from paper_trader import (
+    process_opportunities, get_summary, load_state, check_circuit_breaker,
+    save_state, record_learning,
+)
 from telegram_notifier import send_message, format_opportunity_alert, format_summary, format_weekly_report
 from brain import handle_telegram_messages
 import real_trader
@@ -44,9 +51,9 @@ def run():
 
     existing_state = load_state()
 
-    # --- Check Telegram for commands (/reset, /status, /error, or chat)
-    # BEFORE the circuit breaker gate below, so /reset actually has a
-    # chance to run even while the breaker is tripped. ---
+    # --- Check Telegram for commands (/reset, /status, /error, /learnings,
+    # note:, or free-form chat) BEFORE the circuit breaker gate below, so
+    # /reset actually has a chance to run even while the breaker is tripped. ---
     summary_before = get_summary(existing_state)
     existing_state = handle_telegram_messages(existing_state, summary_before)
     save_state(existing_state)
@@ -80,19 +87,16 @@ def run():
     elif pairs_with_no_data:
         print(f"[main] WARNING: no price data for: {pairs_with_no_data} (partial API issue, continuing with the rest)")
 
-    # Log latency so we can tell if we're too slow to realistically compete
     for pair, info in latency_info.items():
         print(f"[main] {pair} scan latency: {info['total_scan_ms']}ms, "
               f"price impact: {info.get('price_impact_pct', {})}")
 
-    # --- Multi-size testing: see how spread holds up at $50 / $100 / $500 ---
     multi_size_results = scan_for_opportunities_multi_size(scan_results)
     for pair, by_size in multi_size_results.items():
         sizes_with_opp = [size for size, opp in by_size.items() if opp]
         if sizes_with_opp:
             print(f"[main] {pair}: opportunity holds at sizes {sizes_with_opp}")
 
-    # --- Main paper trading pass at the primary trade size ---
     opportunities = scan_for_opportunities(scan_results, trade_size_usd=TRADE_SIZE_USD)
     print(f"[main] Found {len(opportunities)} profitable opportunities at ${TRADE_SIZE_USD}")
 
@@ -108,13 +112,21 @@ def run():
         send_message(format_opportunity_alert(trade))
 
     if state.get("circuit_breaker_tripped"):
+        # Auto-record what led to this trip so the bot's brain remembers
+        # the pattern next time it's asked about it.
+        recent_losses = [t for t in state.get("trades", [])[-5:] if t.get("profit_usd", 0) < 0]
+        pairs_involved = sorted(set(t["pair"] for t in recent_losses))
+        note = (
+            f"Circuit breaker tripped after consecutive losses on: {', '.join(pairs_involved) or 'recent trades'}. "
+            f"Check if these pairs/DEXs have a recurring fill-failure pattern before re-enabling at full size."
+        )
+        record_learning(state, note)
         send_message("🔴 Circuit breaker just tripped after consecutive losses. "
                       "Send /reset on Telegram when ready to resume.")
 
     summary = get_summary(state)
     print(f"[main] Summary: {summary}")
 
-    # --- Real trading hook (inert unless explicitly enabled — see real_trader.py) ---
     if real_trader.ENABLE_LIVE_TRADING:
         for opp in opportunities:
             result = real_trader.process_real_opportunity(opp)
