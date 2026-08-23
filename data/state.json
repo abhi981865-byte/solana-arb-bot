@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1008.9478,
+  "balance_usd": 1009.4227,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -277,10 +277,34 @@
       "net_spread_pct": 0.4021,
       "status": "partial_fill",
       "profit_usd": 0.3217
+    },
+    {
+      "timestamp": "2026-08-23T07:02:22.153207+00:00",
+      "pair": "JUP/USDC",
+      "buy_dex": "Raydium",
+      "sell_dex": "Meteora DLMM",
+      "buy_price": 0.19436852,
+      "sell_price": 0.19614604,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.2645,
+      "status": "filled",
+      "profit_usd": 0.2645
+    },
+    {
+      "timestamp": "2026-08-23T07:02:22.153234+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora DLMM",
+      "sell_dex": "Raydium",
+      "buy_price": 0.1860058,
+      "sell_price": 0.18760625,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.2104,
+      "status": "filled",
+      "profit_usd": 0.2104
     }
   ],
-  "total_trades": 23,
-  "total_profit_usd": 8.9478,
+  "total_trades": 25,
+  "total_profit_usd": 9.4227,
   "failed_trades": 11,
   "partial_fill_trades": 4,
   "consecutive_losses": 0,
@@ -291,7 +315,7 @@
   "best_trade_usd": 0.0,
   "worst_trade_usd": 0.0,
   "pair_stats": {},
-  "telegram_last_update_id": 595275915,
+  "telegram_last_update_id": 595275917,
   "last_error": null,
   "chat_history": [
     {
@@ -301,6 +325,22 @@
     {
       "role": "assistant",
       "content": "Brain se jawab lene mein error aa gaya: 404 Client Error: Not Found for url: https://api.groq.com/openai/v1/chat/completions"
+    },
+    {
+      "role": "user",
+      "content": "hii"
+    },
+    {
+      "role": "assistant",
+      "content": "Hey! \ud83d\ude4f Bot chal raha\u202fhai, lekin recent trades mein kaafi \u201cfailed_fill\u201d aur \u201cpartial_fill\u201d entries nazar aa rahi hain. Iska matlab:\n\n1. **Liquidity/price slippage** \u2013 jo price aapko mil raha tha, wo market mein thoda change ho gaya tha, isliye order pura fill nahi ho paaya.  \n2. **Spread threshold** \u2013 humara minimum net spread threshold (\u22480.2\u20110.3\u202f%) set hai; agar real\u2011time spread usse kam ho jata hai, bot order ko skip ya cancel kar deta hai.\n\nIsliye aap dekh rahe honge ki \u201ckyu nhi chal rha\u201d \u2013 bot technically active (circuit breaker false, balance $1008) par bahut saare attempts fail ho rahe hain. Aap:\n\n- **Spread threshold** thoda lower kar sakte hain (e.g., 0.15\u202f%).  \n- **Trade size** ko kam (\u20b950\u2011\u20b980) kar ke dekh sakte hain, taaki partial fills kam ho.  \n- **Liquidity pools** (Raydium vs Meteora) ke recent depth ko monitor karein; agar ek pool bahut thin hai, us pair ko temporarily skip kar den.\n\nAgar aapko aur details chahiye ya koi specific pair test karna hai, bata dijiye! \ud83d\ude80"
+    },
+    {
+      "role": "user",
+      "content": "is there any error"
+    },
+    {
+      "role": "assistant",
+      "content": "Bot ke end\u2011point ya configuration mein koi technical **error** nahi hai \u2013 circuit breaker bhi false hai aur balance\u202f\u2248\u202f$1009\u202fhai. \u0932\u0947\u0915\u093f\u0928 \u0926\u0947\u0916\u0947\u0902 \u0924\u094b\u202f:\n\n* **Failed\u202ffills**\u202f=\u202f11/23 (\u2248\u202f48\u202f%) \u0914\u0930 **partial\u202ffills**\u202f=\u202f4/23.  \n* \u0915\u0908 \u092c\u093e\u0930 \u201cfailed_fill\u201d \u0915\u093e \u0915\u093e\u0930\u0923 \u092c\u0939\u0941\u0924 \u091b\u094b\u091f\u093e\u202fnet\u202fspread\u202f\u0939\u0948 (\u091c\u0948\u0938\u0947 0.186\u202f%\u202f\u092f\u093e 0.331\u202f%), \u091c\u094b \u0939\u092e\u093e\u0930\u0947\u202fminimum\u202fspread\u202fthreshold\u202f\u0938\u0947\u202f\u0915\u092e\u202f\u0939\u094b \u0938\u0915\u0924\u093e\u202f\u0939\u0948, \u092f\u093e liquidity pool \u092e\u0947\u0902 slippage\u202f\u0939\u0948.  \n* \u0915\u0941\u091b \u201cpartial_fill\u201d \u0935\u093e\u0932\u0947 trade \u092e\u0947\u0902 profit\u202f0.32\u202fUSD \u0926\u093f\u0916 \u0930\u0939\u093e\u202f\u0939\u0948, \u091c\u093f\u0938\u0915\u093e \u092e\u0924\u0932\u092c\u202forder\u202f\u092a\u0942\u0930\u0940\u202f\u0924\u0930\u0940\u0915\u0947\u202f\u0938\u0947\u202fexecute\u202f\u0928\u0939\u0940\u0902\u202f\u0939\u0941\u0906\u202f(\u0909\u0926\u093e\u0939\u0930\u0923\u202f\u2013\u202fWIF/USDC\u202f06:50\u202fUTC).\n\n\u0924\u094b \u0938\u0902\u0915\u094d\u0937\u0947\u092a \u092e\u0947\u0902: **\u0915\u094b\u0908 \u0938\u093f\u0938\u094d\u091f\u092e\u2011\u092c\u0917 \u0928\u0939\u0940\u0902**, \u0932\u0947\u0915\u093f\u0928 \u0930\u0923\u0928\u0940\u0924\u093f\u2011\u092a\u0948\u0930\u093e\u092e\u0940\u091f\u0930 (spread threshold, trade\u2011size, \u092f\u093e pool\u2011selection) \u0915\u094b \u091f\u094d\u092f\u0942\u0928 \u0915\u0930\u0928\u0947 \u0938\u0947 \u092b\u093c\u0947\u0932\u2011\u0930\u0947\u091f \u0915\u092e \u0939\u094b \u0938\u0915\u0924\u093e \u0939\u0948\u0964 \u0905\u0917\u0930 \u0906\u092a \u091a\u093e\u0939\u0947\u0902 \u0924\u094b\u202fthreshold\u202f\u0915\u094b \u0925\u094b\u0921\u093c\u093e\u202f\u0928\u0940\u091a\u093e\u202f\u0915\u0930\u0947\u0902 \u092f\u093e\u202f\u091b\u094b\u091f\u0947\u202f$50\u2011$80\u202fsize\u202f\u0938\u0947\u202f\u092a\u0930\u0940\u0915\u094d\u0937\u0923\u202f\u0915\u0930\u0947\u0902\u0964 \ud83d\ude80"
     }
   ],
   "learnings": []
