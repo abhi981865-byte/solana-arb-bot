@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1009.4227,
+  "balance_usd": 1009.4207,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -301,13 +301,25 @@
       "net_spread_pct": 0.2104,
       "status": "filled",
       "profit_usd": 0.2104
+    },
+    {
+      "timestamp": "2026-08-23T07:23:31.276340+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora DLMM",
+      "sell_dex": "Raydium",
+      "buy_price": 0.1860058,
+      "sell_price": 0.19020874999999998,
+      "trade_size_usd": 100,
+      "net_spread_pct": 1.6096,
+      "status": "failed_fill",
+      "profit_usd": -0.002
     }
   ],
-  "total_trades": 25,
-  "total_profit_usd": 9.4227,
-  "failed_trades": 11,
+  "total_trades": 26,
+  "total_profit_usd": 9.4207,
+  "failed_trades": 12,
   "partial_fill_trades": 4,
-  "consecutive_losses": 0,
+  "consecutive_losses": 1,
   "circuit_breaker_tripped": false,
   "circuit_breaker_tripped_at": null,
   "peak_balance_usd": 1000.0,
@@ -315,7 +327,7 @@
   "best_trade_usd": 0.0,
   "worst_trade_usd": 0.0,
   "pair_stats": {},
-  "telegram_last_update_id": 595275917,
+  "telegram_last_update_id": 595275919,
   "last_error": null,
   "chat_history": [
     {
@@ -341,6 +353,22 @@
     {
       "role": "assistant",
       "content": "Bot ke end\u2011point ya configuration mein koi technical **error** nahi hai \u2013 circuit breaker bhi false hai aur balance\u202f\u2248\u202f$1009\u202fhai. \u0932\u0947\u0915\u093f\u0928 \u0926\u0947\u0916\u0947\u0902 \u0924\u094b\u202f:\n\n* **Failed\u202ffills**\u202f=\u202f11/23 (\u2248\u202f48\u202f%) \u0914\u0930 **partial\u202ffills**\u202f=\u202f4/23.  \n* \u0915\u0908 \u092c\u093e\u0930 \u201cfailed_fill\u201d \u0915\u093e \u0915\u093e\u0930\u0923 \u092c\u0939\u0941\u0924 \u091b\u094b\u091f\u093e\u202fnet\u202fspread\u202f\u0939\u0948 (\u091c\u0948\u0938\u0947 0.186\u202f%\u202f\u092f\u093e 0.331\u202f%), \u091c\u094b \u0939\u092e\u093e\u0930\u0947\u202fminimum\u202fspread\u202fthreshold\u202f\u0938\u0947\u202f\u0915\u092e\u202f\u0939\u094b \u0938\u0915\u0924\u093e\u202f\u0939\u0948, \u092f\u093e liquidity pool \u092e\u0947\u0902 slippage\u202f\u0939\u0948.  \n* \u0915\u0941\u091b \u201cpartial_fill\u201d \u0935\u093e\u0932\u0947 trade \u092e\u0947\u0902 profit\u202f0.32\u202fUSD \u0926\u093f\u0916 \u0930\u0939\u093e\u202f\u0939\u0948, \u091c\u093f\u0938\u0915\u093e \u092e\u0924\u0932\u092c\u202forder\u202f\u092a\u0942\u0930\u0940\u202f\u0924\u0930\u0940\u0915\u0947\u202f\u0938\u0947\u202fexecute\u202f\u0928\u0939\u0940\u0902\u202f\u0939\u0941\u0906\u202f(\u0909\u0926\u093e\u0939\u0930\u0923\u202f\u2013\u202fWIF/USDC\u202f06:50\u202fUTC).\n\n\u0924\u094b \u0938\u0902\u0915\u094d\u0937\u0947\u092a \u092e\u0947\u0902: **\u0915\u094b\u0908 \u0938\u093f\u0938\u094d\u091f\u092e\u2011\u092c\u0917 \u0928\u0939\u0940\u0902**, \u0932\u0947\u0915\u093f\u0928 \u0930\u0923\u0928\u0940\u0924\u093f\u2011\u092a\u0948\u0930\u093e\u092e\u0940\u091f\u0930 (spread threshold, trade\u2011size, \u092f\u093e pool\u2011selection) \u0915\u094b \u091f\u094d\u092f\u0942\u0928 \u0915\u0930\u0928\u0947 \u0938\u0947 \u092b\u093c\u0947\u0932\u2011\u0930\u0947\u091f \u0915\u092e \u0939\u094b \u0938\u0915\u0924\u093e \u0939\u0948\u0964 \u0905\u0917\u0930 \u0906\u092a \u091a\u093e\u0939\u0947\u0902 \u0924\u094b\u202fthreshold\u202f\u0915\u094b \u0925\u094b\u0921\u093c\u093e\u202f\u0928\u0940\u091a\u093e\u202f\u0915\u0930\u0947\u0902 \u092f\u093e\u202f\u091b\u094b\u091f\u0947\u202f$50\u2011$80\u202fsize\u202f\u0938\u0947\u202f\u092a\u0930\u0940\u0915\u094d\u0937\u0923\u202f\u0915\u0930\u0947\u0902\u0964 \ud83d\ude80"
+    },
+    {
+      "role": "user",
+      "content": "mai tumhe or improve kese karu"
+    },
+    {
+      "role": "assistant",
+      "content": "Hey! Bot ko aur\u202fbehtar\u202fbanane ke liye\u202faap\u202fye\u202fcheez\u202fkar\u202fsakte\u202fhain:\n\n1. **Spread\u202fthreshold\u202ftune\u202fkarein** \u2013 abhi\u202fminimum\u202fnet\u202fspread\u202f\u2248\u202f0.2\u20110.3\u202f%\u202fset hai, isliye bahut saare \u201cfailed_fill\u201d aate hain (JUP/USDC ka\u202f0.13\u20110.33\u202f% spread fail ho raha). Thoda\u202flower\u202fkarke (e.g.,\u202f0.15\u202f%\u202fya\u202f0.12\u202f%) try karein, lekin risk\u202fbhi\u202fbadhega \u2013 isliye pehle\u202fsmall\u202fsize\u202f(\u20b950\u2011\u20b980) se test karein.\n\n2. **Trade\u2011size\u202fadjust\u202fkaren** \u2013 100\u202fUSD ka size thin liquidity pools (Raydium \u2194\u202fMeteora) me slip kar sakta hai. Size ko 50\u201170\u202fUSD tak ghataane se\u202fpartial\u202f/\u202ffailed\u202ffills kam ho sakte hain aur ROI stable rahega.\n\n3. **Liquidity\u2011pool\u202ffilter add karein** \u2013 har trade se pehle pool depth (order\u2011book\u202fsize\u202f\u2265\u202f$5k\u202fya\u202f>\u202f0.5\u202f%\u202fof\u202ftrade\u2011size) check karein. Agar depth kam ho, us pair ko skip kar dein; aap \u201cJUP/USDC\u201d ke liye recent depth ko monitor kar sakte hain.\n\n4. **Dynamic\u202fDEX\u2011selection** \u2013 abhi fixed \u201cbuy\u2011dex\u201d\u202f=\u202fRaydium, \u201csell\u2011dex\u201d\u202f=\u202fMeteora. Agar ek side ka spread bahut tight ho, opposite direction flip karne ki logic add karein (buy\u202fMeteora\u202fsell\u202fRaydium) \u2013 isse successful arbitrage chances badhenge.\n\n5. **Time\u2011of\u2011day filter** \u2013 Solana market ke high\u2011volatility windows (e.g., 00:00\u201104:00\u202fUTC) me spreads rapidly change. Aap \u201cquiet"
+    },
+    {
+      "role": "user",
+      "content": "kya scan chal rha hai abhi"
+    },
+    {
+      "role": "assistant",
+      "content": "Haan, scan bilkul chal raha hai! \ud83d\ude80 Bot ka circuit\u2011breaker false hai, balance $\u22481009\u202fUSD hai aur har\u202ffew\u202fseconds\u202fnaye\u202fpairs (JUP/USDC, WIF/USDC, SOL/USDT) ke spread ko scan karke arbitrage try kar raha hai. Recent trades mein \u201cfailed_fill\u201d aur \u201cpartial_fill\u201d entries dikh rahi hain, matlab scan ho raha hai lekin kuch trades spread ya liquidity ki wajah se poore nahi ho pa rahe. Agar aapko lagta hai ki spread threshold ya trade size ko tweak karna chahiye, bata dijiye!"
     }
   ],
   "learnings": []
