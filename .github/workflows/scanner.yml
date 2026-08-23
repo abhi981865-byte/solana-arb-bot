@@ -10,6 +10,13 @@ on:
     - cron: '45 3 * * 1'
   workflow_dispatch: {} # allows manual "Run workflow" trigger from GitHub UI
 
+# Prevents two runs from committing state.json at the same time (which was
+# causing "failed to push" errors). Runs queue up one after another instead
+# of overlapping — none are cancelled, so no scan/trade data is ever lost.
+concurrency:
+  group: solana-arb-scanner
+  cancel-in-progress: false
+
 permissions:
   contents: write # needed to commit updated state.json (and docs/state.json) back to the repo
 
@@ -27,6 +34,7 @@ env:
 jobs:
   scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 10 # safety net — kill the job if something hangs, so the next scheduled run isn't blocked forever
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -35,6 +43,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip' # speeds up repeated runs by caching installed packages
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -62,9 +71,30 @@ jobs:
         run: python main.py weekly
 
       - name: Commit updated state
+        if: always() # commit whatever state we have even if a step above failed partway, so progress/errors aren't lost
         run: |
           git config user.name "arb-bot"
           git config user.email "arb-bot@users.noreply.github.com"
           git add data/state.json docs/state.json
-          git diff --staged --quiet || git commit -m "Update paper trading state [skip ci]"
-          git push
+
+          if git diff --staged --quiet; then
+            echo "No state changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Update paper trading state [skip ci]"
+
+          # Retry with rebase in case another run (rare, but possible even
+          # with concurrency control on manual dispatch overlaps) pushed
+          # first. Each attempt re-pulls the latest before pushing again.
+          for i in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push; then
+              echo "Pushed successfully on attempt $i."
+              exit 0
+            fi
+            echo "Push failed (attempt $i), retrying in 5s..."
+            sleep 5
+          done
+
+          echo "::error::Failed to push updated state after 5 attempts."
+          exit 1
