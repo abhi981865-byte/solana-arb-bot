@@ -2,30 +2,30 @@
 brain.py
 
 Gives the bot a "brain" — lets you chat with it on Telegram in plain
-English/Hindi and ask things like "why did the circuit breaker trip?" or
-"how are we doing this week?". Runs as part of the existing 5-minute
-scanner cycle: it reads any new messages sent to the bot, handles known
-COMMANDS directly (reset, status, error) — these work even without GROQ —
-and sends everything else to the model for a conversational answer using
-the current paper-trading state as context. Powered by Groq (free, no
-credit card).
+English/Hindi, remembers recent conversation turns (chat_history) so it
+stays consistent across messages, and remembers past mistakes/patterns
+(learnings) so it doesn't repeat them. Runs as part of the existing
+5-minute scanner cycle: reads new messages, handles known COMMANDS
+directly (reset, status, error, learnings, note) — these work even
+without GROQ — and sends everything else to the model for a
+conversational answer using current state + chat history + learnings as
+context. Powered by Groq (free, no credit card).
 
 Only messages from the authorized TELEGRAM_CHAT_ID are processed — anyone
-else messaging the bot is silently ignored, so a stranger can't reset your
-bot or burn your Groq quota.
+else messaging the bot is silently ignored.
 
 Requires these GitHub Actions secrets:
 - TELEGRAM_BOT_TOKEN (you already have this)
 - TELEGRAM_CHAT_ID (you already have this)
 - GROQ_API_KEY (free key from console.groq.com) — only needed for free-form
-  chat questions; /reset, /status, /error work without it.
+  chat questions; /reset, /status, /error, /learnings, note: work without it.
 """
 
 import os
 import json
 import requests
 
-from paper_trader import reset_circuit_breaker, get_summary
+from paper_trader import reset_circuit_breaker, get_summary, record_learning
 from telegram_notifier import send_message
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -35,10 +35,18 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}"
 GROQ_MODEL = "llama-3.3-70b-versatile"
 
+# How many past chat turns (user+assistant pairs) to keep and send back to
+# the model for conversational memory.
+MAX_CHAT_TURNS = 10
+
 SYSTEM_PROMPT = """You are the "brain" of a Solana DEX arbitrage PAPER trading bot \
 (no real money — this is a learning/validation project). You have access to the \
-bot's current state and recent trades below. Answer the user's question clearly, \
-in a friendly and direct tone. Use Hindi+English (Hinglish) if the user writes in \
+bot's current state, recent trades, past learnings (things the bot has already \
+noticed about its own behavior), and your recent conversation history below. \
+Answer the user's question clearly, in a friendly and direct tone, and use the \
+conversation history to stay consistent with what you've already told them. Use \
+the past learnings to avoid repeating advice that's already been noted, and refer \
+to them when relevant. Use Hindi+English (Hinglish) if the user writes in \
 Hinglish, otherwise match their language. Keep answers concise (a few sentences), \
 unless they ask for detail. Never claim the bot trades real money — it's paper \
 trading only unless the state explicitly says otherwise. If asked for financial \
@@ -46,10 +54,10 @@ advice, note you can explain what's happening but can't tell them what to do wit
 real money."""
 
 # --- Known commands: these bypass the LLM entirely and act directly on the bot ---
-# Match is case-insensitive and ignores a leading "/". Add more here as needed.
 RESET_COMMANDS = {"reset", "resume", "unpause"}
 STATUS_COMMANDS = {"status", "balance", "summary"}
 ERROR_COMMANDS = {"error", "errors", "lasterror", "last error", "bug", "issue"}
+LEARNINGS_COMMANDS = {"learnings", "lessons"}
 
 
 def fetch_new_messages(last_update_id: int) -> list:
@@ -66,17 +74,29 @@ def fetch_new_messages(last_update_id: int) -> list:
 
 
 def build_context(state: dict, summary: dict) -> str:
-    """Turns the bot's current state into a compact text block the model can read."""
+    """Turns the bot's current state (summary, trades, learnings) into a compact text block."""
     recent_trades = state.get("trades", [])[-10:]
+    recent_learnings = state.get("learnings", [])[-10:]
+    learnings_text = "\n".join(f"- {l['note']}" for l in recent_learnings) or "None yet."
     return (
         f"CURRENT SUMMARY:\n{json.dumps(summary, indent=2)}\n\n"
-        f"LAST 10 TRADES:\n{json.dumps(recent_trades, indent=2)}"
+        f"LAST 10 TRADES:\n{json.dumps(recent_trades, indent=2)}\n\n"
+        f"PAST LEARNINGS (don't repeat these mistakes or ignore them):\n{learnings_text}"
     )
 
 
-def ask_brain(question: str, context: str) -> str:
+def ask_brain(question: str, context: str, chat_history: list) -> str:
+    """Asks the LLM, including recent chat history so it remembers earlier turns."""
     if not GROQ_API_KEY:
         return "Brain abhi set up nahi hai — GROQ_API_KEY secret add karo GitHub mein."
+
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    messages.extend(chat_history[-(MAX_CHAT_TURNS * 2):])
+    messages.append({
+        "role": "user",
+        "content": f"BOT STATE CONTEXT (current):\n{context}\n\nUSER QUESTION:\n{question}",
+    })
+
     resp = requests.post(
         "https://api.groq.com/openai/v1/chat/completions",
         headers={
@@ -86,13 +106,7 @@ def ask_brain(question: str, context: str) -> str:
         json={
             "model": GROQ_MODEL,
             "max_tokens": 600,
-            "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {
-                    "role": "user",
-                    "content": f"BOT STATE CONTEXT:\n{context}\n\nUSER QUESTION:\n{question}",
-                },
-            ],
+            "messages": messages,
         },
         timeout=30,
     )
@@ -140,20 +154,34 @@ def try_handle_command(state: dict, text: str) -> str | None:
             f"Traceback (partial):\n{last_error.get('traceback', '')[-500:]}"
         )
 
+    if normalized in LEARNINGS_COMMANDS:
+        recent = state.get("learnings", [])[-10:]
+        if not recent:
+            return "Abhi tak koi learning record nahi hai."
+        lines = "\n".join(f"• {l['note']}" for l in recent)
+        return f"🧠 Recent Learnings:\n{lines}"
+
+    if normalized.startswith("learn:") or normalized.startswith("note:"):
+        note_text = text.split(":", 1)[1].strip()
+        if not note_text:
+            return "Kuch likh bhi de note karne ke liye — jaise: note: <baat>"
+        record_learning(state, note_text)
+        return f'🧠 Note kar liya: "{note_text}"'
+
     return None  # not a command — let the LLM handle it
 
 
 def handle_telegram_messages(state: dict, summary: dict) -> dict:
     """
     Checks for new Telegram messages. Only messages from TELEGRAM_CHAT_ID are
-    processed — anything else is skipped (but still marked as read, so a
-    stranger's messages don't get stuck retrying forever). Known commands
-    (reset, status, error) are executed directly; everything else is
-    answered by the LLM using the current state as context. Returns the
-    updated state (with telegram_last_update_id bumped forward, and
-    possibly circuit breaker reset if that command was used).
+    processed. Known commands (reset, status, error, learnings, note) are
+    executed directly and are NOT added to chat memory (they're mechanical,
+    not conversation). Free-form questions are answered by the LLM using
+    current state + chat history + learnings as context, and each Q&A pair
+    is appended to chat_history for future turns.
     """
     last_update_id = state.get("telegram_last_update_id", 0)
+    chat_history = state.setdefault("chat_history", [])
     context = build_context(state, summary)
 
     try:
@@ -181,9 +209,14 @@ def handle_telegram_messages(state: dict, summary: dict) -> dict:
             continue
 
         try:
-            answer = ask_brain(text, context)
+            answer = ask_brain(text, context, chat_history)
         except requests.RequestException as e:
             answer = f"Brain se jawab lene mein error aa gaya: {e}"
+
         send_message(answer)
+
+        chat_history.append({"role": "user", "content": text})
+        chat_history.append({"role": "assistant", "content": answer})
+        state["chat_history"] = chat_history[-(MAX_CHAT_TURNS * 2):]
 
     return state
