@@ -2,8 +2,11 @@
 main.py
 
 Entry point run by GitHub Actions on a schedule. Scans prices, detects
-opportunities, executes paper trades, checks for new Telegram chat messages
-(and replies via the "brain"), and sends Telegram alerts.
+opportunities, executes paper trades, and sends Telegram alerts.
+
+Telegram commands (/reset, /status, /error, or free-form questions) are
+checked FIRST, before the circuit breaker gate — otherwise a tripped
+breaker would make the bot exit before it ever saw your /reset message.
 
 IMPORTANT: Real trading is OFF by default. See real_trader.py for what it
 would take to enable it (multiple safety gates, all must be explicitly
@@ -14,94 +17,46 @@ is explicitly set — see the bottom of run() for exactly where that happens.
 import json
 import os
 import shutil
-import traceback
 from datetime import datetime, timezone
 
 from price_scanner import scan_all_pairs
 from spread_detector import scan_for_opportunities, scan_for_opportunities_multi_size
-from paper_trader import (
-    process_opportunities,
-    get_summary,
-    load_state,
-    save_state,
-    check_circuit_breaker,
-)
+from paper_trader import process_opportunities, get_summary, load_state, check_circuit_breaker, save_state
 from telegram_notifier import send_message, format_opportunity_alert, format_summary, format_weekly_report
+from brain import handle_telegram_messages
 import real_trader
 
-try:
-    from brain import handle_telegram_messages
-    BRAIN_AVAILABLE = True
-except ImportError:
-    # brain.py not added yet, or its dependencies aren't installed — the bot
-    # keeps scanning/trading normally, it just won't reply to chat messages.
-    BRAIN_AVAILABLE = False
-
 TRADE_SIZE_USD = 100  # primary simulated trade size used for paper trading
+
 DOCS_STATE_PATH = os.path.join(os.path.dirname(__file__), "docs", "state.json")
 DATA_STATE_PATH = os.path.join(os.path.dirname(__file__), "data", "state.json")
 
 
-def sync_dashboard_data() -> None:
+def sync_dashboard_data():
     """Copies the latest state.json into docs/ so the GitHub Pages dashboard can read it."""
     if os.path.exists(DATA_STATE_PATH):
         os.makedirs(os.path.dirname(DOCS_STATE_PATH), exist_ok=True)
         shutil.copy(DATA_STATE_PATH, DOCS_STATE_PATH)
 
 
-def record_error(state: dict, error_type: str, message: str, mode: str = "scan", tb: str = "") -> None:
-    """
-    Saves the most recent error into state so it can be asked about on
-    Telegram later (e.g. typing "error"). Keeps only the last one — enough
-    to answer "what broke" without bloating state.json.
-    """
-    state["last_error"] = {
-        "type": error_type,
-        "message": message[:300],
-        "mode": mode,
-        "at": datetime.now(timezone.utc).isoformat(),
-        "traceback": tb[-1500:] if tb else "",
-    }
-    try:
-        save_state(state)
-    except Exception as e:
-        print(f"[main] Failed to save error to state: {e}")
-
-
-def check_chat(state: dict) -> dict:
-    """
-    Checks for new Telegram messages and replies via the brain, if it's
-    available and configured. Wrapped so a chat/API failure can NEVER take
-    down the actual scanner/trading run — worst case, chat just doesn't
-    reply this cycle and the next run tries again.
-    """
-    if not BRAIN_AVAILABLE:
-        return state
-    try:
-        summary = get_summary(state)
-        state = handle_telegram_messages(state, summary)
-        save_state(state)
-    except Exception as e:
-        print(f"[main] Brain/chat check failed (non-fatal, continuing): {e}")
-    return state
-
-
-def run() -> None:
+def run():
     print(f"[main] Run started at {datetime.now(timezone.utc).isoformat()}")
 
     existing_state = load_state()
 
-    # --- Check for new chat messages first, regardless of what happens below ---
-    existing_state = check_chat(existing_state)
+    # --- Check Telegram for commands (/reset, /status, /error, or chat)
+    # BEFORE the circuit breaker gate below, so /reset actually has a
+    # chance to run even while the breaker is tripped. ---
+    summary_before = get_summary(existing_state)
+    existing_state = handle_telegram_messages(existing_state, summary_before)
+    save_state(existing_state)
 
     # --- Check circuit breaker BEFORE scanning — no point burning API calls if paused ---
     if check_circuit_breaker(existing_state):
-        print(
-            "[main] Circuit breaker is tripped. Skipping this run. "
-            "Review data/state.json and call reset_circuit_breaker() manually to resume."
-        )
-        send_message("🔴 Circuit breaker still tripped — bot is paused. Review trades and reset manually when ready.")
-        sync_dashboard_data()
+        print("[main] Circuit breaker is tripped. Skipping this run. "
+              "Send /reset on Telegram, or review data/state.json and call "
+              "reset_circuit_breaker() manually to resume.")
+        send_message("🔴 Circuit breaker still tripped — bot is paused. Send /reset on Telegram when ready.")
         return
 
     scan_output = scan_all_pairs()
@@ -110,18 +65,15 @@ def run() -> None:
     print(f"[main] Scanned {len(scan_results)} pairs")
 
     # --- Detect total API failure (e.g. Jupiter changed their response format,
-    # or dex label names changed) — this would otherwise fail SILENTLY as
+    # or dexes= label names changed) — this would otherwise fail SILENTLY as
     # "just no opportunities found", which looks identical to a healthy run
     # with no arbitrage available. We distinguish the two explicitly.
     pairs_with_no_data = [pair for pair, prices in scan_results.items() if not prices]
     if len(pairs_with_no_data) == len(scan_results):
-        error_msg = (
-            "🔴 <b>Scanner Error</b>\nGot zero price data for ALL pairs this run. "
-            "Jupiter API may be down, or the request format may need updating. "
-            "Check the Actions log for details."
-        )
+        error_msg = ("🔴 <b>Scanner Error</b>\nGot zero price data for ALL pairs this run. "
+                     "Jupiter API may be down, or the request format may need updating. "
+                     "Check the Actions log for details.")
         print(f"[main] ERROR: {error_msg}")
-        record_error(existing_state, "scanner_error", "Zero price data for ALL pairs — Jupiter API may be down or format changed.", mode="scan")
         send_message(error_msg)
         sync_dashboard_data()
         return
@@ -130,10 +82,8 @@ def run() -> None:
 
     # Log latency so we can tell if we're too slow to realistically compete
     for pair, info in latency_info.items():
-        print(
-            f"[main] {pair} scan latency: {info['total_scan_ms']}ms, "
-            f"price impact: {info.get('price_impact_pct', {})}"
-        )
+        print(f"[main] {pair} scan latency: {info['total_scan_ms']}ms, "
+              f"price impact: {info.get('price_impact_pct', {})}")
 
     # --- Multi-size testing: see how spread holds up at $50 / $100 / $500 ---
     multi_size_results = scan_for_opportunities_multi_size(scan_results)
@@ -152,23 +102,19 @@ def run() -> None:
         return
 
     state, executed_trades = process_opportunities(opportunities)
+
     for trade in executed_trades:
         print(f"[main] Paper trade: {trade}")
         send_message(format_opportunity_alert(trade))
 
     if state.get("circuit_breaker_tripped"):
-        send_message(
-            "🔴 Circuit breaker just tripped after consecutive losses. "
-            "Bot will pause until manually reset — review data/state.json."
-        )
+        send_message("🔴 Circuit breaker just tripped after consecutive losses. "
+                      "Send /reset on Telegram when ready to resume.")
 
     summary = get_summary(state)
     print(f"[main] Summary: {summary}")
 
     # --- Real trading hook (inert unless explicitly enabled — see real_trader.py) ---
-    # This ONLY does anything if ENABLE_LIVE_TRADING=true AND SOLANA_PRIVATE_KEY is set
-    # AND execute_real_trade() has actually been implemented (it currently raises
-    # NotImplementedError on purpose). Until then this block only logs why it declined.
     if real_trader.ENABLE_LIVE_TRADING:
         for opp in opportunities:
             result = real_trader.process_real_opportunity(opp)
@@ -177,25 +123,23 @@ def run() -> None:
     sync_dashboard_data()
 
 
-def daily_summary() -> None:
+def daily_summary():
     """Separate entrypoint for a once-a-day summary message (see workflow)."""
     state = load_state()
-    state = check_chat(state)
     summary = get_summary(state)
     send_message(format_summary(summary))
     sync_dashboard_data()
 
 
-def weekly_report() -> None:
+def weekly_report():
     """Entrypoint for a once-a-week deep-dive report (see workflow)."""
     state = load_state()
-    state = check_chat(state)
     send_message(format_weekly_report(state))
-    sync_dashboard_data()
 
 
 if __name__ == "__main__":
     import sys
+    import traceback
 
     mode = sys.argv[1] if len(sys.argv) > 1 else "scan"
 
@@ -207,23 +151,11 @@ if __name__ == "__main__":
         else:
             run()
     except Exception as e:
-        # Catch-all: any unhandled crash anywhere in the pipeline gets reported
-        # to Telegram instead of failing silently. GitHub Actions will also show
-        # this run as failed (we re-raise after alerting), so it's visible in
-        # both places.
         tb = traceback.format_exc()
         print(f"[main] UNHANDLED ERROR:\n{tb}")
         error_summary = f"{type(e).__name__}: {str(e)}"[:300]
         try:
-            crash_state = load_state()
-            record_error(crash_state, type(e).__name__, str(e), mode=mode, tb=tb)
-        except Exception as record_err:
-            print(f"[main] Also failed to record error to state: {record_err}")
-        try:
-            send_message(
-                f"🔴 <b>Bot Crashed</b>\nMode: {mode}\nError: {error_summary}\n\n"
-                "Check GitHub Actions logs for full traceback."
-            )
+            send_message(f"🔴 <b>Bot Crashed</b>\nMode: {mode}\nError: {error_summary}\n\nCheck GitHub Actions logs for full traceback.")
         except Exception as notify_err:
             print(f"[main] Also failed to send crash alert to Telegram: {notify_err}")
-        raise  # re-raise so the GitHub Actions run shows as failed, not green
+        raise
