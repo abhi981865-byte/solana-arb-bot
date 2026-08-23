@@ -5,14 +5,20 @@ Gives the bot a "brain" — lets you chat with it on Telegram in plain
 English/Hindi and ask things like "why did the circuit breaker trip?" or
 "how are we doing this week?". Runs as part of the existing 5-minute
 scanner cycle: it reads any new messages sent to the bot, handles known
-COMMANDS directly (reset, status), and sends everything else to the model
-for a conversational answer using the current paper-trading state as
-context. Powered by Groq (free, no credit card).
+COMMANDS directly (reset, status, error) — these work even without GROQ —
+and sends everything else to the model for a conversational answer using
+the current paper-trading state as context. Powered by Groq (free, no
+credit card).
+
+Only messages from the authorized TELEGRAM_CHAT_ID are processed — anyone
+else messaging the bot is silently ignored, so a stranger can't reset your
+bot or burn your Groq quota.
 
 Requires these GitHub Actions secrets:
-  - TELEGRAM_BOT_TOKEN   (you already have this)
-  - TELEGRAM_CHAT_ID     (you already have this)
-  - GROQ_API_KEY         (free key from console.groq.com)
+- TELEGRAM_BOT_TOKEN (you already have this)
+- TELEGRAM_CHAT_ID (you already have this)
+- GROQ_API_KEY (free key from console.groq.com) — only needed for free-form
+  chat questions; /reset, /status, /error work without it.
 """
 
 import os
@@ -20,6 +26,7 @@ import json
 import requests
 
 from paper_trader import reset_circuit_breaker, get_summary
+from telegram_notifier import send_message
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
@@ -58,16 +65,6 @@ def fetch_new_messages(last_update_id: int) -> list:
     return resp.json().get("result", [])
 
 
-def send_telegram_message(text: str) -> None:
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        return
-    requests.post(
-        f"{TELEGRAM_API}/sendMessage",
-        json={"chat_id": TELEGRAM_CHAT_ID, "text": text},
-        timeout=15,
-    )
-
-
 def build_context(state: dict, summary: dict) -> str:
     """Turns the bot's current state into a compact text block the model can read."""
     recent_trades = state.get("trades", [])[-10:]
@@ -80,7 +77,6 @@ def build_context(state: dict, summary: dict) -> str:
 def ask_brain(question: str, context: str) -> str:
     if not GROQ_API_KEY:
         return "Brain abhi set up nahi hai — GROQ_API_KEY secret add karo GitHub mein."
-
     resp = requests.post(
         "https://api.groq.com/openai/v1/chat/completions",
         headers={
@@ -149,11 +145,13 @@ def try_handle_command(state: dict, text: str) -> str | None:
 
 def handle_telegram_messages(state: dict, summary: dict) -> dict:
     """
-    Checks for new Telegram messages. Known commands (reset, status, etc.)
-    are executed directly; everything else is answered by the LLM using the
-    current state as context. Returns the updated state (with
-    telegram_last_update_id bumped forward, and possibly circuit breaker
-    reset if that command was used).
+    Checks for new Telegram messages. Only messages from TELEGRAM_CHAT_ID are
+    processed — anything else is skipped (but still marked as read, so a
+    stranger's messages don't get stuck retrying forever). Known commands
+    (reset, status, error) are executed directly; everything else is
+    answered by the LLM using the current state as context. Returns the
+    updated state (with telegram_last_update_id bumped forward, and
+    possibly circuit breaker reset if that command was used).
     """
     last_update_id = state.get("telegram_last_update_id", 0)
     context = build_context(state, summary)
@@ -166,21 +164,26 @@ def handle_telegram_messages(state: dict, summary: dict) -> dict:
 
     for update in updates:
         state["telegram_last_update_id"] = update["update_id"]
+
         message = update.get("message", {})
         text = message.get("text", "").strip()
+        sender_id = str(message.get("chat", {}).get("id", ""))
+
         if not text:
+            continue
+        if TELEGRAM_CHAT_ID and sender_id != str(TELEGRAM_CHAT_ID):
+            print(f"[brain] Ignoring message from unauthorized chat_id={sender_id}")
             continue
 
         command_reply = try_handle_command(state, text)
         if command_reply is not None:
-            send_telegram_message(command_reply)
+            send_message(command_reply)
             continue
 
         try:
             answer = ask_brain(text, context)
         except requests.RequestException as e:
             answer = f"Brain se jawab lene mein error aa gaya: {e}"
-
-        send_telegram_message(answer)
+        send_message(answer)
 
     return state
