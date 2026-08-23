@@ -1,5 +1,6 @@
 """
 telegram_notifier.py
+
 Sends alerts to Telegram via bot API. Reads credentials from environment
 variables (set as GitHub Actions secrets — never hardcode these).
 
@@ -23,7 +24,6 @@ def send_message(text):
         print("[telegram_notifier] Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID env vars — skipping send.")
         print(f"[telegram_notifier] Message was:\n{text}")
         return False
-
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}
     try:
@@ -72,7 +72,7 @@ def format_weekly_report(state):
     if not trades:
         return "📅 <b>Weekly Report</b>\nNo trades recorded this period."
 
-    recent = trades[-500:]  # everything we have (trade log is capped at 500)
+    recent = trades[-500:]
     profits = [t["profit_usd"] for t in recent]
     best = max(recent, key=lambda t: t["profit_usd"])
     worst = min(recent, key=lambda t: t["profit_usd"])
@@ -96,40 +96,3 @@ def format_weekly_report(state):
         f"Worst trade: {worst['pair']} ${worst['profit_usd']:.4f}\n\n"
         f"<b>By pair:</b>\n{pair_lines}"
     )
-def get_updates(offset=None):
-    """Polls Telegram for new incoming messages sent to the bot."""
-    if not BOT_TOKEN:
-        return []
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
-    params = {"timeout": 0}
-    if offset is not None:
-        params["offset"] = offset
-    try:
-        resp = requests.get(url, params=params, timeout=10)
-        if resp.status_code != 200:
-            print(f"[telegram_notifier] Failed to get updates: {resp.status_code} {resp.text[:200]}")
-            return []
-        return resp.json().get("result", [])
-    except requests.RequestException as e:
-        print(f"[telegram_notifier] Request error (get_updates): {e}")
-        return []
-
-
-def check_for_reset_command(last_update_id):
-    """
-    Checks Telegram for a /reset command sent by the authorized chat.
-    Returns (reset_requested, newest_update_id) so the caller can save
-    the offset and never reprocess the same message twice.
-    """
-    offset = (last_update_id + 1) if last_update_id else None
-    updates = get_updates(offset=offset)
-    reset_requested = False
-    newest_id = last_update_id
-    for update in updates:
-        newest_id = max(newest_id, update["update_id"])
-        message = update.get("message", {})
-        text = message.get("text", "").strip().lower()
-        sender_id = str(message.get("chat", {}).get("id", ""))
-        if text == "/reset" and sender_id == str(CHAT_ID):
-            reset_requested = True
-    return reset_requested, newest_id
