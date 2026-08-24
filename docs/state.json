@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1095.1024,
+  "balance_usd": 1095.1831,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -1513,10 +1513,22 @@
       "net_spread_pct": 0.4855,
       "status": "filled",
       "profit_usd": 0.5314
+    },
+    {
+      "timestamp": "2026-08-24T20:43:22.251700+00:00",
+      "pair": "JUP/USDC",
+      "buy_dex": "Meteora",
+      "sell_dex": "Raydium",
+      "buy_price": 0.2049,
+      "sell_price": 0.2071,
+      "trade_size_usd": 109.51,
+      "net_spread_pct": 0.0737,
+      "status": "filled",
+      "profit_usd": 0.0807
     }
   ],
-  "total_trades": 126,
-  "total_profit_usd": 95.1024,
+  "total_trades": 127,
+  "total_profit_usd": 95.1831,
   "failed_trades": 43,
   "partial_fill_trades": 16,
   "consecutive_losses": 0,
