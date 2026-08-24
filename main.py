@@ -1,8 +1,10 @@
 """
 main.py
 
-Entry point run by GitHub Actions on a schedule. Scans prices, detects
-opportunities, executes paper trades, and sends Telegram alerts.
+Entry point run by GitHub Actions on a schedule. Scans prices (via
+DexScreener, see price_scanner.py), detects opportunities (with liquidity
+and freshness filters, see spread_detector.py), executes paper trades, and
+sends Telegram alerts.
 
 Telegram commands (/reset, /status, /error, /learnings, note:, or
 free-form questions) are checked FIRST, before the circuit breaker gate —
@@ -71,14 +73,14 @@ def run():
     latency_info = scan_output["latency"]
     print(f"[main] Scanned {len(scan_results)} pairs")
 
-    # --- Detect total API failure (e.g. Jupiter changed their response format,
-    # or dexes= label names changed) — this would otherwise fail SILENTLY as
+    # --- Detect total API failure (e.g. DexScreener is down, or their
+    # response format changed) — this would otherwise fail SILENTLY as
     # "just no opportunities found", which looks identical to a healthy run
     # with no arbitrage available. We distinguish the two explicitly.
     pairs_with_no_data = [pair for pair, prices in scan_results.items() if not prices]
     if len(pairs_with_no_data) == len(scan_results):
         error_msg = ("🔴 <b>Scanner Error</b>\nGot zero price data for ALL pairs this run. "
-                     "Jupiter API may be down, or the request format may need updating. "
+                     "DexScreener API may be down, or the response format may need updating. "
                      "Check the Actions log for details.")
         print(f"[main] ERROR: {error_msg}")
         send_message(error_msg)
@@ -89,15 +91,17 @@ def run():
 
     for pair, info in latency_info.items():
         print(f"[main] {pair} scan latency: {info['total_scan_ms']}ms, "
-              f"price impact: {info.get('price_impact_pct', {})}")
+              f"liquidity: {info.get('per_pool_liquidity_usd', {})}")
 
-    multi_size_results = scan_for_opportunities_multi_size(scan_results)
+    # --- Multi-size testing: see how spread holds up at $50 / $100 / $500 ---
+    multi_size_results = scan_for_opportunities_multi_size(scan_results, liquidity_info=latency_info)
     for pair, by_size in multi_size_results.items():
         sizes_with_opp = [size for size, opp in by_size.items() if opp]
         if sizes_with_opp:
             print(f"[main] {pair}: opportunity holds at sizes {sizes_with_opp}")
 
-    opportunities = scan_for_opportunities(scan_results, trade_size_usd=TRADE_SIZE_USD)
+    # --- Main paper trading pass at the primary trade size ---
+    opportunities = scan_for_opportunities(scan_results, trade_size_usd=TRADE_SIZE_USD, liquidity_info=latency_info)
     print(f"[main] Found {len(opportunities)} profitable opportunities at ${TRADE_SIZE_USD}")
 
     if not opportunities:
