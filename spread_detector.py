@@ -1,27 +1,74 @@
 """
 spread_detector.py
-Given per-DEX prices for a pair, find the buy-low/sell-high spread and check
-if it clears a minimum profit threshold after estimated costs.
+
+Given per-DEX prices (and liquidity) for a pair, find the buy-low/sell-high
+spread and check if it clears a minimum profit threshold after estimated
+costs, plus additional filters aimed at cutting failed/partial fills:
+- An EXTRA safety margin on top of fee/slippage costs, so we only act on
+  spreads with real room to spare (marginal ones get skipped, not just
+  fee-adjusted)
+- Both the buy-side and sell-side pool must have enough liquidity relative
+  to the trade size, so the pool can actually absorb the trade near the
+  quoted price
+- Price data must be fresh (not from a stale/delayed scan) — and if it
+  ever IS stale, that's logged so it's visible in Actions logs, not a
+  silent skip
 """
 
-# Estimated round-trip cost assumptions (tune these based on real observation):
-# - Solana network fee: negligible (~$0.00025/tx) but 2 txs needed (buy + sell)
-# - DEX swap fee: ~0.25% typical (varies by pool, 0.01%-1%)
-# - Slippage buffer: extra safety margin since real fill may be worse than quote
-SWAP_FEE_PCT = 0.25       # per swap, so 0.50% round trip
-SLIPPAGE_BUFFER_PCT = 0.15  # extra safety margin
-NETWORK_FEE_USD = 0.001    # ~2 txs worth of SOL gas, converted to USD estimate
+from datetime import datetime, timezone
 
-MIN_PROFIT_PCT = SWAP_FEE_PCT * 2 + SLIPPAGE_BUFFER_PCT  # ~0.65% minimum spread needed
+# Estimated round-trip cost assumptions (tune based on real observation):
+SWAP_FEE_PCT = 0.25  # per swap, so 0.50% round trip
+SLIPPAGE_BUFFER_PCT = 0.15  # baseline safety margin for cost estimation
+NETWORK_FEE_USD = 0.001  # ~2 txs worth of SOL gas, converted to USD estimate
+
+# Extra margin ON TOP of the cost buffer above — the "skip marginal
+# spreads" filter. Raising this = fewer but safer trades; lower it if too
+# few opportunities are being found.
+EXTRA_SAFETY_MARGIN_PCT = 0.35
+
+MIN_PROFIT_PCT = SWAP_FEE_PCT * 2 + SLIPPAGE_BUFFER_PCT + EXTRA_SAFETY_MARGIN_PCT
+# ~1.00% minimum net spread needed (up from ~0.65%) — filters out the
+# thin, noisy spreads that were driving most failed/partial fills.
+
+# A pool's liquidity must be at least this many times the trade size for
+# us to trust its price won't move much once we trade against it.
+# 20x means a $100 trade needs a $2,000+ liquidity pool.
+MIN_LIQUIDITY_MULTIPLE = 20
+
+# Reject a scan's prices if they're older than this (seconds) by the time
+# we evaluate them. In a normal run this check never fires (scan-to-check
+# gap is 1-2s); it's a safety net for slow/retried scans.
+MAX_PRICE_AGE_SECONDS = 45
 
 
-def find_opportunity(pair_name, dex_prices, trade_size_usd=100):
+def _is_fresh(scanned_at_iso):
+    if not scanned_at_iso:
+        return True
+    try:
+        scanned_at = datetime.fromisoformat(scanned_at_iso)
+    except ValueError:
+        return True
+    age_seconds = (datetime.now(timezone.utc) - scanned_at).total_seconds()
+    is_fresh = age_seconds <= MAX_PRICE_AGE_SECONDS
+    if not is_fresh:
+        print(f"[spread_detector] Skipping stale price data ({age_seconds:.1f}s old, limit {MAX_PRICE_AGE_SECONDS}s)")
+    return is_fresh
+
+
+def find_opportunity(pair_name, dex_prices, trade_size_usd=100, dex_liquidity=None, scanned_at=None):
     """
-    dex_prices: {"Raydium": 152.3, "Orca": 152.1, "Meteora": 152.5, "Jupiter_Aggregate": 152.2}
-    Returns an opportunity dict if profitable after costs, else None.
+    dex_prices: {"Raydium": 152.3, "Meteora": 152.5, ...}
+    dex_liquidity: {"Raydium": 45000, ...} USD liquidity per pool (optional)
+    scanned_at: ISO timestamp of when these prices were fetched (optional)
+
+    Returns an opportunity dict if profitable after costs AND passes the
+    liquidity/freshness filters, else None.
     """
-    # Only compare actual DEX prices, not the aggregate baseline
-    real_prices = {k: v for k, v in dex_prices.items() if k != "Jupiter_Aggregate" and v}
+    if scanned_at is not None and not _is_fresh(scanned_at):
+        return None
+
+    real_prices = {k: v for k, v in dex_prices.items() if v}
     if len(real_prices) < 2:
         return None
 
@@ -35,9 +82,17 @@ def find_opportunity(pair_name, dex_prices, trade_size_usd=100):
 
     raw_spread_pct = ((sell_price - buy_price) / buy_price) * 100
     net_spread_pct = raw_spread_pct - MIN_PROFIT_PCT
-
     if net_spread_pct <= 0:
-        return None  # not profitable after costs
+        return None
+
+    if dex_liquidity:
+        min_required_liquidity = trade_size_usd * MIN_LIQUIDITY_MULTIPLE
+        buy_liq = dex_liquidity.get(buy_dex)
+        sell_liq = dex_liquidity.get(sell_dex)
+        if buy_liq is not None and buy_liq < min_required_liquidity:
+            return None
+        if sell_liq is not None and sell_liq < min_required_liquidity:
+            return None
 
     est_profit_usd = (net_spread_pct / 100) * trade_size_usd - NETWORK_FEE_USD
 
@@ -54,39 +109,44 @@ def find_opportunity(pair_name, dex_prices, trade_size_usd=100):
     }
 
 
-def scan_for_opportunities(scan_results, trade_size_usd=100):
+def scan_for_opportunities(scan_results, trade_size_usd=100, liquidity_info=None):
     """
     scan_results: the "results" dict from price_scanner.scan_all_pairs()
-    (i.e. scan_all_pairs()["results"])
+    liquidity_info: the "latency" dict from price_scanner.scan_all_pairs()
     Returns a list of profitable opportunity dicts.
     """
     opportunities = []
+    liquidity_info = liquidity_info or {}
     for pair_name, dex_prices in scan_results.items():
-        opp = find_opportunity(pair_name, dex_prices, trade_size_usd)
+        pair_info = liquidity_info.get(pair_name, {})
+        opp = find_opportunity(
+            pair_name, dex_prices, trade_size_usd,
+            dex_liquidity=pair_info.get("per_pool_liquidity_usd"),
+            scanned_at=pair_info.get("scanned_at"),
+        )
         if opp:
             opportunities.append(opp)
     return opportunities
 
 
-# Trade sizes to test in parallel. Larger trades often eat into the available
-# liquidity at a DEX, meaning the effective price gets worse the bigger you
-# trade — so a "spread" that looks profitable at $50 might vanish at $500.
-# Jupiter's quote already reflects some of this (quotes are size-aware), but
-# testing multiple sizes side-by-side is how we notice at what size the edge
-# disappears.
 TEST_TRADE_SIZES_USD = [50, 100, 500]
 
 
-def scan_for_opportunities_multi_size(scan_results, trade_sizes=None):
+def scan_for_opportunities_multi_size(scan_results, trade_sizes=None, liquidity_info=None):
     """
     Runs opportunity detection at multiple trade sizes for every pair.
     Returns: { "SOL/USDC": {50: opp_or_None, 100: opp_or_None, 500: opp_or_None}, ... }
-    Useful for seeing how spread/profitability changes with size.
     """
     trade_sizes = trade_sizes or TEST_TRADE_SIZES_USD
+    liquidity_info = liquidity_info or {}
     results = {}
     for pair_name, dex_prices in scan_results.items():
+        pair_info = liquidity_info.get(pair_name, {})
         results[pair_name] = {}
         for size in trade_sizes:
-            results[pair_name][size] = find_opportunity(pair_name, dex_prices, size)
+            results[pair_name][size] = find_opportunity(
+                pair_name, dex_prices, size,
+                dex_liquidity=pair_info.get("per_pool_liquidity_usd"),
+                scanned_at=pair_info.get("scanned_at"),
+            )
     return results
