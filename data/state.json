@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1068.1894,
+  "balance_usd": 1068.1874,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -1237,15 +1237,27 @@
       "net_spread_pct": 0.3458,
       "status": "failed_fill",
       "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-24T04:11:04.323013+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora DLMM",
+      "sell_dex": "Raydium",
+      "buy_price": 0.193557,
+      "sell_price": 0.19488675,
+      "trade_size_usd": 100,
+      "net_spread_pct": 0.037,
+      "status": "failed_fill",
+      "profit_usd": -0.002
     }
   ],
-  "total_trades": 103,
-  "total_profit_usd": 68.1894,
-  "failed_trades": 34,
+  "total_trades": 104,
+  "total_profit_usd": 68.1874,
+  "failed_trades": 35,
   "partial_fill_trades": 14,
-  "consecutive_losses": 2,
-  "circuit_breaker_tripped": false,
-  "circuit_breaker_tripped_at": null,
+  "consecutive_losses": 3,
+  "circuit_breaker_tripped": true,
+  "circuit_breaker_tripped_at": "2026-08-24T04:11:04.323036+00:00",
   "peak_balance_usd": 1000.0,
   "max_drawdown_pct": 0.0,
   "best_trade_usd": 0.0,
@@ -1322,6 +1334,10 @@
   "learnings": [
     {
       "at": "2026-08-23T09:48:20.041128+00:00",
+      "note": "Circuit breaker tripped after consecutive losses on: JUP/USDC, WIF/USDC. Check if these pairs/DEXs have a recurring fill-failure pattern before re-enabling at full size."
+    },
+    {
+      "at": "2026-08-24T04:11:05.000136+00:00",
       "note": "Circuit breaker tripped after consecutive losses on: JUP/USDC, WIF/USDC. Check if these pairs/DEXs have a recurring fill-failure pattern before re-enabling at full size."
     }
   ]
