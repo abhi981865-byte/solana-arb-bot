@@ -2,9 +2,9 @@
 main.py
 
 Entry point run by GitHub Actions on a schedule. Scans prices (via
-DexScreener, see price_scanner.py), detects opportunities (with liquidity
-and freshness filters, see spread_detector.py), executes paper trades, and
-sends Telegram alerts.
+DexScreener, see price_scanner.py), detects opportunities with dynamic
+trade sizing and liquidity/freshness filters (see spread_detector.py),
+executes paper trades, and sends Telegram alerts.
 
 Telegram commands (/reset, /status, /error, /learnings, note:, or
 free-form questions) are checked FIRST, before the circuit breaker gate —
@@ -16,8 +16,9 @@ bot's "brain" remembers the pattern for future conversations.
 
 IMPORTANT: Real trading is OFF by default. See real_trader.py for what it
 would take to enable it (multiple safety gates, all must be explicitly
-configured). This script never calls real_trader unless ENABLE_LIVE_TRADING
-is explicitly set — see the bottom of run() for exactly where that happens.
+configured, and actual execution is deliberately not implemented yet).
+This script never calls real_trader unless ENABLE_LIVE_TRADING is
+explicitly set — see the bottom of run() for exactly where that happens.
 """
 
 import json
@@ -26,7 +27,7 @@ import shutil
 from datetime import datetime, timezone
 
 from price_scanner import scan_all_pairs
-from spread_detector import scan_for_opportunities, scan_for_opportunities_multi_size
+from spread_detector import scan_for_dynamic_opportunities
 from paper_trader import (
     process_opportunities, get_summary, load_state, check_circuit_breaker,
     save_state, record_learning,
@@ -34,8 +35,6 @@ from paper_trader import (
 from telegram_notifier import send_message, format_opportunity_alert, format_summary, format_weekly_report
 from brain import handle_telegram_messages
 import real_trader
-
-TRADE_SIZE_USD = 100  # primary simulated trade size used for paper trading
 
 DOCS_STATE_PATH = os.path.join(os.path.dirname(__file__), "docs", "state.json")
 DATA_STATE_PATH = os.path.join(os.path.dirname(__file__), "data", "state.json")
@@ -93,16 +92,16 @@ def run():
         print(f"[main] {pair} scan latency: {info['total_scan_ms']}ms, "
               f"liquidity: {info.get('per_pool_liquidity_usd', {})}")
 
-    # --- Multi-size testing: see how spread holds up at $50 / $100 / $500 ---
-    multi_size_results = scan_for_opportunities_multi_size(scan_results, liquidity_info=latency_info)
-    for pair, by_size in multi_size_results.items():
-        sizes_with_opp = [size for size, opp in by_size.items() if opp]
-        if sizes_with_opp:
-            print(f"[main] {pair}: opportunity holds at sizes {sizes_with_opp}")
-
-    # --- Main paper trading pass at the primary trade size ---
-    opportunities = scan_for_opportunities(scan_results, trade_size_usd=TRADE_SIZE_USD, liquidity_info=latency_info)
-    print(f"[main] Found {len(opportunities)} profitable opportunities at ${TRADE_SIZE_USD}")
+    # --- Dynamic sizing: pick the largest viable trade size per pair,
+    # instead of always trading a fixed size regardless of opportunity
+    # quality. A strong, well-liquidated spread gets sized up; a marginal
+    # one stays small or gets skipped. Multiple simultaneously-profitable
+    # pairs are all included, not just one. ---
+    opportunities = scan_for_dynamic_opportunities(scan_results, liquidity_info=latency_info)
+    for opp in opportunities:
+        print(f"[main] {opp['pair']}: sized at ${opp['trade_size_usd']} "
+              f"(net spread {opp['net_spread_pct']}%, est. profit ${opp['est_profit_usd']})")
+    print(f"[main] Found {len(opportunities)} profitable opportunities (dynamically sized)")
 
     if not opportunities:
         print("[main] No opportunities this run.")
@@ -116,8 +115,6 @@ def run():
         send_message(format_opportunity_alert(trade))
 
     if state.get("circuit_breaker_tripped"):
-        # Auto-record what led to this trip so the bot's brain remembers
-        # the pattern next time it's asked about it.
         recent_losses = [t for t in state.get("trades", [])[-5:] if t.get("profit_usd", 0) < 0]
         pairs_involved = sorted(set(t["pair"] for t in recent_losses))
         note = (
@@ -131,6 +128,7 @@ def run():
     summary = get_summary(state)
     print(f"[main] Summary: {summary}")
 
+    # --- Real trading hook (inert unless explicitly enabled — see real_trader.py) ---
     if real_trader.ENABLE_LIVE_TRADING:
         for opp in opportunities:
             result = real_trader.process_real_opportunity(opp)
