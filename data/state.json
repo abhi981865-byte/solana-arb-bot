@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1094.571,
+  "balance_usd": 1095.1024,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -1501,10 +1501,22 @@
       "net_spread_pct": 0.0247,
       "status": "filled",
       "profit_usd": 0.027
+    },
+    {
+      "timestamp": "2026-08-24T19:10:14.458013+00:00",
+      "pair": "BONK/USDC",
+      "buy_dex": "Raydium",
+      "sell_dex": "Orca",
+      "buy_price": 3.164e-06,
+      "sell_price": 3.211e-06,
+      "trade_size_usd": 109.46,
+      "net_spread_pct": 0.4855,
+      "status": "filled",
+      "profit_usd": 0.5314
     }
   ],
-  "total_trades": 125,
-  "total_profit_usd": 94.571,
+  "total_trades": 126,
+  "total_profit_usd": 95.1024,
   "failed_trades": 43,
   "partial_fill_trades": 16,
   "consecutive_losses": 0,
