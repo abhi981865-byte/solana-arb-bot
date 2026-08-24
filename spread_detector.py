@@ -13,6 +13,11 @@ costs, plus additional filters aimed at cutting failed/partial fills:
 - Price data must be fresh (not from a stale/delayed scan) — and if it
   ever IS stale, that's logged so it's visible in Actions logs, not a
   silent skip
+
+Also supports DYNAMIC trade sizing: scan_for_dynamic_opportunities() picks
+the largest trade size (from a candidate list) that still clears every
+filter for each pair — a strong, well-liquidated spread gets sized up; a
+marginal one stays small or gets skipped entirely.
 """
 
 from datetime import datetime, timezone
@@ -96,6 +101,15 @@ def find_opportunity(pair_name, dex_prices, trade_size_usd=100, dex_liquidity=No
 
     est_profit_usd = (net_spread_pct / 100) * trade_size_usd - NETWORK_FEE_USD
 
+    # How big this trade is relative to the smaller of the two pools —
+    # a rough slippage-risk proxy used by real_trader.py's extra safety check.
+    liquidity_ratio_pct = None
+    if dex_liquidity:
+        pool_sizes = [dex_liquidity.get(buy_dex), dex_liquidity.get(sell_dex)]
+        pool_sizes = [p for p in pool_sizes if p]
+        if pool_sizes:
+            liquidity_ratio_pct = round((trade_size_usd / min(pool_sizes)) * 100, 3)
+
     return {
         "pair": pair_name,
         "buy_dex": buy_dex,
@@ -106,13 +120,13 @@ def find_opportunity(pair_name, dex_prices, trade_size_usd=100, dex_liquidity=No
         "net_spread_pct": round(net_spread_pct, 4),
         "trade_size_usd": trade_size_usd,
         "est_profit_usd": round(est_profit_usd, 4),
+        "liquidity_ratio_pct": liquidity_ratio_pct,
     }
 
 
 def scan_for_opportunities(scan_results, trade_size_usd=100, liquidity_info=None):
     """
-    scan_results: the "results" dict from price_scanner.scan_all_pairs()
-    liquidity_info: the "latency" dict from price_scanner.scan_all_pairs()
+    Fixed-size scan: tests every pair at a single trade_size_usd.
     Returns a list of profitable opportunity dicts.
     """
     opportunities = []
@@ -134,8 +148,9 @@ TEST_TRADE_SIZES_USD = [50, 100, 500]
 
 def scan_for_opportunities_multi_size(scan_results, trade_sizes=None, liquidity_info=None):
     """
-    Runs opportunity detection at multiple trade sizes for every pair.
-    Returns: { "SOL/USDC": {50: opp_or_None, 100: opp_or_None, 500: opp_or_None}, ... }
+    Diagnostic helper: runs opportunity detection at multiple trade sizes
+    for every pair, returning the full breakdown. Not used in the main
+    trading path — see scan_for_dynamic_opportunities() for that.
     """
     trade_sizes = trade_sizes or TEST_TRADE_SIZES_USD
     liquidity_info = liquidity_info or {}
@@ -150,3 +165,31 @@ def scan_for_opportunities_multi_size(scan_results, trade_sizes=None, liquidity_
                 scanned_at=pair_info.get("scanned_at"),
             )
     return results
+
+
+# Sizes to test for dynamic sizing — the LARGEST one that still clears all
+# filters is used for that pair's trade.
+DYNAMIC_TRADE_SIZES_USD = [50, 100, 250, 500]
+
+
+def scan_for_dynamic_opportunities(scan_results, trade_sizes=None, liquidity_info=None):
+    """
+    For each pair, tests multiple trade sizes (largest first) and picks the
+    biggest one that still clears the profit + liquidity filters. Returns a
+    list of opportunity dicts — one per pair with any viable size, so
+    multiple simultaneously-profitable pairs are all included. This is the
+    main trading path used by main.py.
+    """
+    trade_sizes = sorted(trade_sizes or DYNAMIC_TRADE_SIZES_USD, reverse=True)
+    liquidity_info = liquidity_info or {}
+    opportunities = []
+    for pair_name, dex_prices in scan_results.items():
+        pair_info = liquidity_info.get(pair_name, {})
+        dex_liquidity = pair_info.get("per_pool_liquidity_usd")
+        scanned_at = pair_info.get("scanned_at")
+        for size in trade_sizes:
+            opp = find_opportunity(pair_name, dex_prices, size, dex_liquidity, scanned_at)
+            if opp:
+                opportunities.append(opp)
+                break
+    return opportunities
