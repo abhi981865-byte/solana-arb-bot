@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1308.6393,
+  "balance_usd": 1308.9947,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -1933,10 +1933,22 @@
       "net_spread_pct": 0.0753,
       "status": "filled",
       "profit_usd": 0.0985
+    },
+    {
+      "timestamp": "2026-08-25T20:14:30.123192+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Orca",
+      "sell_dex": "Raydium",
+      "buy_price": 0.1966,
+      "sell_price": 0.1991,
+      "trade_size_usd": 130.86,
+      "net_spread_pct": 0.2716,
+      "status": "filled",
+      "profit_usd": 0.3554
     }
   ],
-  "total_trades": 161,
-  "total_profit_usd": 308.6393,
+  "total_trades": 162,
+  "total_profit_usd": 308.9947,
   "failed_trades": 54,
   "partial_fill_trades": 20,
   "consecutive_losses": 0,
