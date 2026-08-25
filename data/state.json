@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1327.8563,
+  "balance_usd": 1341.6359,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -2041,13 +2041,37 @@
       "net_spread_pct": 0.127,
       "status": "filled",
       "profit_usd": 0.1686
+    },
+    {
+      "timestamp": "2026-08-25T23:53:04.496360+00:00",
+      "pair": "BONK/USDC",
+      "buy_dex": "Orca",
+      "sell_dex": "Meteora",
+      "buy_price": 2.698e-06,
+      "sell_price": 3.005e-06,
+      "trade_size_usd": 132.79,
+      "net_spread_pct": 10.3788,
+      "status": "filled",
+      "profit_usd": 13.7816
+    },
+    {
+      "timestamp": "2026-08-25T23:53:04.496379+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Raydium",
+      "sell_dex": "Meteora",
+      "buy_price": 0.1944,
+      "sell_price": 0.1974,
+      "trade_size_usd": 134.16,
+      "net_spread_pct": 0.5432,
+      "status": "failed_fill",
+      "profit_usd": -0.002
     }
   ],
-  "total_trades": 170,
-  "total_profit_usd": 327.8563,
-  "failed_trades": 56,
+  "total_trades": 172,
+  "total_profit_usd": 341.6359,
+  "failed_trades": 57,
   "partial_fill_trades": 21,
-  "consecutive_losses": 0,
+  "consecutive_losses": 1,
   "circuit_breaker_tripped": false,
   "circuit_breaker_tripped_at": null,
   "peak_balance_usd": 1000.0,
