@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1295.4366,
+  "balance_usd": 1295.7958,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -1753,13 +1753,25 @@
       "net_spread_pct": 0.6573,
       "status": "failed_fill",
       "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-25T09:50:34.287163+00:00",
+      "pair": "BONK/USDC",
+      "buy_dex": "Raydium",
+      "sell_dex": "Meteora",
+      "buy_price": 3.21e-06,
+      "sell_price": 3.251e-06,
+      "trade_size_usd": 129.54,
+      "net_spread_pct": 0.2773,
+      "status": "filled",
+      "profit_usd": 0.3592
     }
   ],
-  "total_trades": 146,
-  "total_profit_usd": 295.4366,
+  "total_trades": 147,
+  "total_profit_usd": 295.7958,
   "failed_trades": 51,
   "partial_fill_trades": 17,
-  "consecutive_losses": 2,
+  "consecutive_losses": 0,
   "circuit_breaker_tripped": false,
   "circuit_breaker_tripped_at": null,
   "peak_balance_usd": 1000.0,
