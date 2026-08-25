@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1097.2875,
+  "balance_usd": 1098.4964,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -1597,10 +1597,22 @@
       "net_spread_pct": 0.388,
       "status": "filled",
       "profit_usd": 0.4256
+    },
+    {
+      "timestamp": "2026-08-25T01:46:43.731247+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora",
+      "sell_dex": "Orca",
+      "buy_price": 0.2046,
+      "sell_price": 0.2089,
+      "trade_size_usd": 109.73,
+      "net_spread_pct": 1.1017,
+      "status": "filled",
+      "profit_usd": 1.2089
     }
   ],
-  "total_trades": 133,
-  "total_profit_usd": 97.2875,
+  "total_trades": 134,
+  "total_profit_usd": 98.4964,
   "failed_trades": 44,
   "partial_fill_trades": 16,
   "consecutive_losses": 0,
