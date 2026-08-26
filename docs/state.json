@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1408.8071,
+  "balance_usd": 1422.7673,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -2377,12 +2377,36 @@
       "net_spread_pct": 2.1408,
       "status": "failed_fill",
       "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-26T18:05:57.806619+00:00",
+      "pair": "BONK/USDC",
+      "buy_dex": "Meteora",
+      "sell_dex": "Raydium",
+      "buy_price": 2.547e-06,
+      "sell_price": 2.888e-06,
+      "trade_size_usd": 140.88,
+      "net_spread_pct": 12.3883,
+      "status": "partial_fill",
+      "profit_usd": 13.9622
+    },
+    {
+      "timestamp": "2026-08-26T18:05:57.806639+00:00",
+      "pair": "WIF/USDC",
+      "buy_dex": "Meteora",
+      "sell_dex": "Orca",
+      "buy_price": 0.1916,
+      "sell_price": 0.1998,
+      "trade_size_usd": 142.28,
+      "net_spread_pct": 3.2797,
+      "status": "failed_fill",
+      "profit_usd": -0.002
     }
   ],
-  "total_trades": 198,
-  "total_profit_usd": 408.8071,
-  "failed_trades": 65,
-  "partial_fill_trades": 22,
+  "total_trades": 200,
+  "total_profit_usd": 422.7673,
+  "failed_trades": 66,
+  "partial_fill_trades": 23,
   "consecutive_losses": 1,
   "circuit_breaker_tripped": false,
   "circuit_breaker_tripped_at": null,
@@ -2391,7 +2415,7 @@
   "best_trade_usd": 0.0,
   "worst_trade_usd": 0.0,
   "pair_stats": {},
-  "telegram_last_update_id": 595275926,
+  "telegram_last_update_id": 595275927,
   "last_error": null,
   "chat_history": [
     {
