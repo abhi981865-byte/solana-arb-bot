@@ -1,5 +1,5 @@
 {
-  "balance_usd": 1359.0423,
+  "balance_usd": 1359.4169,
   "starting_balance_usd": 1000.0,
   "trades": [
     {
@@ -2185,13 +2185,25 @@
       "net_spread_pct": 0.2158,
       "status": "failed_fill",
       "profit_usd": -0.002
+    },
+    {
+      "timestamp": "2026-08-26T06:49:56.518176+00:00",
+      "pair": "BONK/USDC",
+      "buy_dex": "Orca",
+      "sell_dex": "Meteora",
+      "buy_price": 2.979e-06,
+      "sell_price": 3.017e-06,
+      "trade_size_usd": 135.9,
+      "net_spread_pct": 0.2756,
+      "status": "filled",
+      "profit_usd": 0.3746
     }
   ],
-  "total_trades": 182,
-  "total_profit_usd": 359.0423,
+  "total_trades": 183,
+  "total_profit_usd": 359.4169,
   "failed_trades": 60,
   "partial_fill_trades": 22,
-  "consecutive_losses": 1,
+  "consecutive_losses": 0,
   "circuit_breaker_tripped": false,
   "circuit_breaker_tripped_at": null,
   "peak_balance_usd": 1000.0,
