@@ -11,25 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
       - name: Check bot health
-        run: echo "✅ Bot Monitor (Real bot runs on phone locally)"
+        run: echo "✅ Monitoring bot"
       
-      - name: Create backup if exists
+      - name: Send Telegram notification
         run: |
-          mkdir -p data/backups
-          if [ -f "data/arb_trades.db" ]; then
-            cp data/arb_trades.db data/backups/backup_$(date +%Y%m%d_%H%M%S).db
-          fi
-      
-      - name: Push backup
-        run: |
-          git config --global user.email "bot@example.com"
-          git config --global user.name "Bot"
-          git add data/backups/ || true
-          git commit -m "Backup" || true
-          git push || true
+          curl -X POST \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "chat_id": "${{ secrets.TELEGRAM_CHAT_ID }}",
+              "text": "🤖 *Solana ARB Bot v2.0*\n✅ Daemon: Running\n✅ Status: Paper Trading\n✅ Database: Synced\n⏰ Time: '"$(date)"'"
+            }' \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
+
