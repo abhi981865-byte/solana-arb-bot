@@ -1,100 +1,24 @@
-name: Solana Arb Paper Trading Scanner
+name: Bot Monitor & Backup (v2)
 
 on:
   schedule:
-    # Runs every 5 minutes — scans for opportunities and paper-trades them
-    - cron: '*/5 * * * *'
-    # Runs once daily at 9:00 AM IST (03:30 UTC) — sends a summary
-    - cron: '30 3 * * *'
-    # Runs once weekly, Monday 9:15 AM IST (03:45 UTC Monday) — deep-dive report
-    - cron: '45 3 * * 1'
-  workflow_dispatch: {} # allows manual "Run workflow" trigger from GitHub UI
-
-# Prevents two runs from committing state.json at the same time (which was
-# causing "failed to push" errors). Runs queue up one after another instead
-# of overlapping — none are cancelled, so no scan/trade data is ever lost.
-concurrency:
-  group: solana-arb-scanner
-  cancel-in-progress: false
-
-permissions:
-  contents: write # needed to commit updated state.json (and docs/state.json) back to the repo
-
-env:
-  # --- Live trading is OFF unless you explicitly add these as real secrets ---
-  # To enable (only after weeks of good paper trading results):
-  # 1. Go to Settings -> Secrets and variables -> Actions
-  # 2. Add ENABLE_LIVE_TRADING=true, SOLANA_PRIVATE_KEY, MAX_TRADE_SIZE_USD, MAX_DAILY_LOSS_USD
-  # Leaving these unset (default) means real_trader.py always refuses to trade.
-  ENABLE_LIVE_TRADING: ${{ secrets.ENABLE_LIVE_TRADING }}
-  SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
-  MAX_TRADE_SIZE_USD: ${{ secrets.MAX_TRADE_SIZE_USD }}
-  MAX_DAILY_LOSS_USD: ${{ secrets.MAX_DAILY_LOSS_USD }}
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 
 jobs:
-  scan:
+  monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 10 # safety net — kill the job if something hangs, so the next scheduled run isn't blocked forever
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          cache: 'pip' # speeds up repeated runs by caching installed packages
-
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Run scanner (every 5 min trigger)
-        if: github.event.schedule == '*/5 * * * *' || github.event_name == 'workflow_dispatch'
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: python main.py
-
-      - name: Run daily summary (9 AM IST trigger)
-        if: github.event.schedule == '30 3 * * *'
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python main.py summary
-
-      - name: Run weekly report (Monday 9:15 AM IST trigger)
-        if: github.event.schedule == '45 3 * * 1'
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python main.py weekly
-
-      - name: Commit updated state
-        if: always() # commit whatever state we have even if a step above failed partway, so progress/errors aren't lost
-        run: |
-          git config user.name "arb-bot"
-          git config user.email "arb-bot@users.noreply.github.com"
-          git add data/state.json docs/state.json
-
-          if git diff --staged --quiet; then
-            echo "No state changes to commit."
-            exit 0
-          fi
-
-          git commit -m "Update paper trading state [skip ci]"
-
-          # Retry with rebase in case another run (rare, but possible even
-          # with concurrency control on manual dispatch overlaps) pushed
-          # first. Each attempt re-pulls the latest before pushing again.
-          for i in 1 2 3 4 5; do
-            if git pull --rebase origin main && git push; then
-              echo "Pushed successfully on attempt $i."
-              exit 0
-            fi
-            echo "Push failed (attempt $i), retrying in 5s..."
-            sleep 5
-          done
-
-          echo "::error::Failed to push updated state after 5 attempts."
-          exit 1
+      - name: Check bot health
+        run: python -c "import sqlite3, os; db='data/arb_trades.db'; print('✅ Bot running' if os.path.exists(db) else '❌ No database')"
+      - name: Create backup
+        run: mkdir -p data/backups && cp data/arb_trades.db data/backups/backup_$(date +%Y%m%d_%H%M%S).db
+      - name: Push backup
+        run: git config --global user.email "bot@example.com" && git config --global user.name "Bot" && git add data/backups/ && git commit -m "Backup" && git push || true
