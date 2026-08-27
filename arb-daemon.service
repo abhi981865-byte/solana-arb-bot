@@ -1,0 +1,12 @@
+[Unit]
+Description=Solana ARB Bot
+After=network.target
+[Service]
+Type=simple
+User=arbbot
+WorkingDirectory=/home/arbbot/solana-arb-bot
+ExecStart=/usr/bin/python3 daemon.py
+Restart=on-failure
+RestartSec=10
+[Install]
+WantedBy=multi-user.target
