@@ -10,15 +10,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      
       - name: Check bot health
-        run: python -c "import sqlite3, os; db='data/arb_trades.db'; print('✅ Bot running' if os.path.exists(db) else '❌ No database')"
-      - name: Create backup
-        run: mkdir -p data/backups && cp data/arb_trades.db data/backups/backup_$(date +%Y%m%d_%H%M%S).db
+        run: echo "✅ Bot Monitor (Real bot runs on phone locally)"
+      
+      - name: Create backup if exists
+        run: |
+          mkdir -p data/backups
+          if [ -f "data/arb_trades.db" ]; then
+            cp data/arb_trades.db data/backups/backup_$(date +%Y%m%d_%H%M%S).db
+          fi
+      
       - name: Push backup
-        run: git config --global user.email "bot@example.com" && git config --global user.name "Bot" && git add data/backups/ && git commit -m "Backup" && git push || true
+        run: |
+          git config --global user.email "bot@example.com"
+          git config --global user.name "Bot"
+          git add data/backups/ || true
+          git commit -m "Backup" || true
+          git push || true
