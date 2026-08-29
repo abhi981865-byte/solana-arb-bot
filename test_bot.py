@@ -11,22 +11,13 @@ os.environ.setdefault("MIN_PROFIT_PCT", "0.5")
 
 from config import Config
 from paper_trader import (
-    load_state, save_state, execute_paper_trade,
-    check_circuit_breaker, reset_circuit_breaker,
-    process_opportunities, get_summary, record_learning, _default_state
+    load_state, save_state, execute_paper_trade, check_circuit_breaker, reset_circuit_breaker, process_opportunities, get_summary, record_learning, _default_state
 )
 
 SAMPLE_OPPORTUNITIES = [
     {
-        "pair": "SOL/USDC", "buy_dex": "Orca", "sell_dex": "Raydium",
-        "buy_price": 179.50, "sell_price": 180.20,
-        "trade_size_usd": 100.0, "net_spread_pct": 1.0,
-    },
-    {
-        "pair": "JUP/USDC", "buy_dex": "Meteora", "sell_dex": "Orca",
-        "buy_price": 0.85, "sell_price": 0.86,
-        "trade_size_usd": 50.0, "net_spread_pct": 1.15,
-    },
+        "pair": "SOL/USDC", "buy_dex": "Orca", "sell_dex": "Raydium", "buy_price": 179.50, "sell_price": 180.20, "trade_size_usd": 100.0, "net_spread_pct": 1.0, }, {
+        "pair": "JUP/USDC", "buy_dex": "Meteora", "sell_dex": "Orca", "buy_price": 0.85, "sell_price": 0.86, "trade_size_usd": 50.0, "net_spread_pct": 1.15, },
 ]
 
 
@@ -50,17 +41,17 @@ def test_state():
         state = load_state()
         assert state["balance_usd"] == Config.STARTING_BALANCE_USD
         print("   ✅ Fresh state OK")
-        
+
         state["balance_usd"] = 1500.0
         save_state(state)
         assert load_state()["balance_usd"] == 1500.0
         print("   ✅ Save/reload OK")
-        
+
         with open(temp, 'w') as f:
             f.write("")
         assert load_state()["balance_usd"] == Config.STARTING_BALANCE_USD
         print("   ✅ Empty file handled")
-        
+
         with open(temp, 'w') as f:
             f.write("not json{{{")
         assert load_state()["balance_usd"] == Config.STARTING_BALANCE_USD
@@ -84,7 +75,7 @@ def test_trade():
         trade = execute_paper_trade(state, SAMPLE_OPPORTUNITIES[0])
         assert trade is not None
         print(f"   ✅ Trade: {trade['status']}, ${trade['profit_usd']}")
-        
+
         state["balance_usd"] = 0.5
         assert execute_paper_trade(state, SAMPLE_OPPORTUNITIES[0]) is None
         print("   ✅ Low balance skipped")
@@ -106,11 +97,11 @@ def test_breaker():
         state = load_state()
         assert not check_circuit_breaker(state)
         print("   ✅ Not tripped initially")
-        
+
         state["consecutive_losses"] = 3
         assert check_circuit_breaker(state)
         print("   ✅ Trips after 3 losses")
-        
+
         reset_circuit_breaker(state)
         assert not state["circuit_breaker_tripped"]
         print("   ✅ Reset works")
@@ -168,10 +159,7 @@ def run_all():
     print("🧪 ARB BOT TEST SUITE")
     print("=" * 60)
     tests = [
-        ("Config", test_config), ("State", test_state),
-        ("Trade", test_trade), ("Breaker", test_breaker),
-        ("Batch", test_batch), ("Learnings", test_learn),
-    ]
+        ("Config", test_config), ("State", test_state), ("Trade", test_trade), ("Breaker", test_breaker), ("Batch", test_batch), ("Learnings", test_learn), ]
     passed = 0
     failed = 0
     for name, fn in tests:

@@ -70,19 +70,9 @@ def generate_report():
     wr = calculate_win_rate(trades)
     max_dd = calculate_max_drawdown(trades)
     return {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "status": "ok",
-        "overview": wr,
-        "profit": {
-            "total": round(sum(t.get("profit_usd", 0) for t in trades), 4),
-            "avg_per_trade": round(sum(t.get("profit_usd", 0) for t in trades) / len(trades), 4),
-            "profit_factor": round(calculate_profit_factor(trades), 2),
-        },
-        "risk": {
-            "sharpe": round(calculate_sharpe(returns), 3),
-            "max_drawdown_pct": round(max_dd, 2),
-        },
-    }
+        "generated_at": datetime.now(timezone.utc).isoformat(), "status": "ok", "overview": wr, "profit": {
+            "total": round(sum(t.get("profit_usd", 0) for t in trades), 4), "avg_per_trade": round(sum(t.get("profit_usd", 0) for t in trades) / len(trades), 4), "profit_factor": round(calculate_profit_factor(trades), 2), }, "risk": {
+            "sharpe": round(calculate_sharpe(returns), 3), "max_drawdown_pct": round(max_dd, 2), }, }
 
 
 def print_report():

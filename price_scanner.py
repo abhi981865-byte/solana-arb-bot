@@ -21,7 +21,7 @@ class PriceData:
 class PriceScanner:
     JUPITER_PRICE_URL = "https://lite-api.jup.ag/price/v3"
     JUPITER_QUOTE_URL = "https://lite-api.jup.ag/swap/v1/quote"
-    
+
     def __init__(self):
         self.price_cache = {}
         self.cache_ttl = Config.PRICE_CACHE_TTL_SECONDS
@@ -29,22 +29,19 @@ class PriceScanner:
         self.request_count = 0
         self.error_count = 0
         self._semaphore = asyncio.Semaphore(Config.BATCH_SIZE)
-        
+
     async def __aenter__(self):
         self.client = httpx.AsyncClient(
-            timeout=httpx.Timeout(8.0, connect=3.0),
-            limits=httpx.Limits(max_connections=Config.MAX_CONNECTIONS, max_keepalive_connections=20),
-            http2=True,
-        )
+            timeout=httpx.Timeout(8.0, connect=3.0), limits=httpx.Limits(max_connections=Config.MAX_CONNECTIONS, max_keepalive_connections=20), http2=True, )
         return self
-        
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.client:
             await self.client.aclose()
-            
+
     def _cache_key(self, token_in, token_out, size):
         return f"{token_in}:{token_out}:{size:.0f}"
-        
+
     def _get_cached(self, key):
         if key in self.price_cache:
             data, cached_at = self.price_cache[key]
@@ -52,13 +49,13 @@ class PriceScanner:
                 return data
             del self.price_cache[key]
         return None
-        
+
     def _set_cache(self, key, data):
         self.price_cache[key] = (data, time.time())
         if len(self.price_cache) > 100:
             oldest = min(self.price_cache, key=lambda k: self.price_cache[k][1])
             del self.price_cache[oldest]
-    
+
     async def fetch_all_usd_prices(self):
         if not self.client:
             return {}
@@ -79,15 +76,12 @@ class PriceScanner:
         except Exception:
             self.error_count += 1
             return {}
-    
+
     async def fetch_quote_fast(self, input_mint, output_mint, amount, slippage_bps=50):
         if not self.client:
             return None
         params = {
-            "inputMint": input_mint, "outputMint": output_mint,
-            "amount": str(amount), "slippageBps": str(slippage_bps),
-            "restrictIntermediateTokens": "true",
-        }
+            "inputMint": input_mint, "outputMint": output_mint, "amount": str(amount), "slippageBps": str(slippage_bps), "restrictIntermediateTokens": "true", }
         try:
             async with self._semaphore:
                 response = await self.client.get(self.JUPITER_QUOTE_URL, params=params)
@@ -99,7 +93,7 @@ class PriceScanner:
         except Exception:
             self.error_count += 1
             return None
-    
+
     async def get_pair_price(self, token_a, token_b, trade_size_usd=50.0):
         cache_key = self._cache_key(token_a, token_b, trade_size_usd)
         cached = self._get_cached(cache_key)
@@ -130,7 +124,7 @@ class PriceScanner:
         data = PriceData(token_a, token_b, price, price_usd, "jupiter", time.time(), confidence)
         self._set_cache(cache_key, data)
         return data
-    
+
     async def scan_all_pairs(self, trade_size_usd=50.0):
         results = {}
         tasks = []
@@ -148,11 +142,7 @@ class PriceScanner:
                 results[name] = price_data
         print(f"   Scanned {len(Config.PAIRS)} pairs in {elapsed:.2f}s")
         return results
-    
+
     def get_stats(self):
         return {
-            "requests": self.request_count,
-            "errors": self.error_count,
-            "error_rate": round(self.error_count / max(self.request_count, 1), 3),
-            "cache_size": len(self.price_cache),
-        }
+            "requests": self.request_count, "errors": self.error_count, "error_rate": round(self.error_count / max(self.request_count, 1), 3), "cache_size": len(self.price_cache), }

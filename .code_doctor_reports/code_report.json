@@ -1,0 +1,2017 @@
+{
+  "timestamp": "2026-08-29T21:01:05.738708",
+  "statistics": {
+    "files_checked": 11,
+    "issues_fixed": 11
+  },
+  "issues": {
+    "syntax": [],
+    "style": [
+      {
+        "file": "config.py",
+        "line": 17,
+        "type": "trailing_whitespace",
+        "msg": "Line 17 has trailing whitespace"
+      },
+      {
+        "file": "config.py",
+        "line": 21,
+        "type": "line_too_long",
+        "msg": "Line 21 too long (104 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 22,
+        "type": "line_too_long",
+        "msg": "Line 22 too long (112 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 23,
+        "type": "line_too_long",
+        "msg": "Line 23 too long (92 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 28,
+        "type": "line_too_long",
+        "msg": "Line 28 too long (104 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 29,
+        "type": "line_too_long",
+        "msg": "Line 29 too long (106 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 30,
+        "type": "line_too_long",
+        "msg": "Line 30 too long (104 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 68,
+        "type": "line_too_long",
+        "msg": "Line 68 too long (89 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 69,
+        "type": "line_too_long",
+        "msg": "Line 69 too long (94 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 84,
+        "type": "trailing_whitespace",
+        "msg": "Line 84 has trailing whitespace"
+      },
+      {
+        "file": "config.py",
+        "line": 88,
+        "type": "line_too_long",
+        "msg": "Line 88 too long (99 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 90,
+        "type": "line_too_long",
+        "msg": "Line 90 too long (91 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 92,
+        "type": "line_too_long",
+        "msg": "Line 92 too long (95 > 88)"
+      },
+      {
+        "file": "config.py",
+        "line": 8,
+        "type": "unused_import",
+        "msg": "Unused import: Path"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 60,
+        "type": "line_too_long",
+        "msg": "Line 60 too long (105 > 88)"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 87,
+        "type": "line_too_long",
+        "msg": "Line 87 too long (104 > 88)"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 125,
+        "type": "line_too_long",
+        "msg": "Line 125 too long (91 > 88)"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 147,
+        "type": "line_too_long",
+        "msg": "Line 147 too long (108 > 88)"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 16,
+        "type": "missing_docstring",
+        "msg": "FunctionDef '_default_state' missing docstring"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 34,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'load_state' missing docstring"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 51,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'save_state' missing docstring"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 59,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'execute_paper_trade' missing docstring"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 106,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'check_circuit_breaker' missing docstring"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 116,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'reset_circuit_breaker' missing docstring"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 123,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'record_learning' missing docstring"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 130,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'process_opportunities' missing docstring"
+      },
+      {
+        "file": "paper_trader.py",
+        "line": 146,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'get_summary' missing docstring"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 24,
+        "type": "trailing_whitespace",
+        "msg": "Line 24 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 32,
+        "type": "trailing_whitespace",
+        "msg": "Line 32 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 36,
+        "type": "line_too_long",
+        "msg": "Line 36 too long (102 > 88)"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 40,
+        "type": "trailing_whitespace",
+        "msg": "Line 40 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 44,
+        "type": "trailing_whitespace",
+        "msg": "Line 44 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 47,
+        "type": "trailing_whitespace",
+        "msg": "Line 47 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 55,
+        "type": "trailing_whitespace",
+        "msg": "Line 55 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 61,
+        "type": "trailing_whitespace",
+        "msg": "Line 61 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 68,
+        "type": "line_too_long",
+        "msg": "Line 68 too long (105 > 88)"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 82,
+        "type": "trailing_whitespace",
+        "msg": "Line 82 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 102,
+        "type": "trailing_whitespace",
+        "msg": "Line 102 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 130,
+        "type": "line_too_long",
+        "msg": "Line 130 too long (96 > 88)"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 133,
+        "type": "trailing_whitespace",
+        "msg": "Line 133 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 151,
+        "type": "trailing_whitespace",
+        "msg": "Line 151 has trailing whitespace"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 3,
+        "type": "unused_import",
+        "msg": "Unused import: Optional"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 3,
+        "type": "unused_import",
+        "msg": "Unused import: Dict"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 11,
+        "type": "missing_docstring",
+        "msg": "ClassDef 'PriceData' missing docstring"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 21,
+        "type": "missing_docstring",
+        "msg": "ClassDef 'PriceScanner' missing docstring"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 45,
+        "type": "missing_docstring",
+        "msg": "FunctionDef '_cache_key' missing docstring"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 48,
+        "type": "missing_docstring",
+        "msg": "FunctionDef '_get_cached' missing docstring"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 56,
+        "type": "missing_docstring",
+        "msg": "FunctionDef '_set_cache' missing docstring"
+      },
+      {
+        "file": "price_scanner.py",
+        "line": 152,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'get_stats' missing docstring"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 22,
+        "type": "trailing_whitespace",
+        "msg": "Line 22 has trailing whitespace"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 33,
+        "type": "trailing_whitespace",
+        "msg": "Line 33 has trailing whitespace"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 61,
+        "type": "trailing_whitespace",
+        "msg": "Line 61 has trailing whitespace"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 79,
+        "type": "trailing_whitespace",
+        "msg": "Line 79 has trailing whitespace"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 80,
+        "type": "line_too_long",
+        "msg": "Line 80 too long (91 > 88)"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 86,
+        "type": "line_too_long",
+        "msg": "Line 86 too long (91 > 88)"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 93,
+        "type": "trailing_whitespace",
+        "msg": "Line 93 has trailing whitespace"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 3,
+        "type": "unused_import",
+        "msg": "Unused import: List"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 11,
+        "type": "missing_docstring",
+        "msg": "ClassDef 'ArbitrageOpportunity' missing docstring"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 27,
+        "type": "missing_docstring",
+        "msg": "ClassDef 'SpreadDetector' missing docstring"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 102,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'format_opportunity' missing docstring"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 23,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'to_dict' missing docstring"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 80,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'filter_opportunities' missing docstring"
+      },
+      {
+        "file": "spread_detector.py",
+        "line": 94,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'get_stats' missing docstring"
+      },
+      {
+        "file": "daemon.py",
+        "line": 4,
+        "type": "line_too_long",
+        "msg": "Line 4 too long (91 > 88)"
+      },
+      {
+        "file": "daemon.py",
+        "line": 29,
+        "type": "trailing_whitespace",
+        "msg": "Line 29 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 33,
+        "type": "trailing_whitespace",
+        "msg": "Line 33 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 42,
+        "type": "trailing_whitespace",
+        "msg": "Line 42 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 49,
+        "type": "line_too_long",
+        "msg": "Line 49 too long (91 > 88)"
+      },
+      {
+        "file": "daemon.py",
+        "line": 53,
+        "type": "trailing_whitespace",
+        "msg": "Line 53 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 56,
+        "type": "trailing_whitespace",
+        "msg": "Line 56 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 73,
+        "type": "trailing_whitespace",
+        "msg": "Line 73 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 90,
+        "type": "trailing_whitespace",
+        "msg": "Line 90 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 106,
+        "type": "trailing_whitespace",
+        "msg": "Line 106 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 117,
+        "type": "trailing_whitespace",
+        "msg": "Line 117 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 122,
+        "type": "trailing_whitespace",
+        "msg": "Line 122 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 133,
+        "type": "trailing_whitespace",
+        "msg": "Line 133 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 147,
+        "type": "trailing_whitespace",
+        "msg": "Line 147 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 157,
+        "type": "trailing_whitespace",
+        "msg": "Line 157 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 162,
+        "type": "trailing_whitespace",
+        "msg": "Line 162 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 174,
+        "type": "trailing_whitespace",
+        "msg": "Line 174 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 180,
+        "type": "trailing_whitespace",
+        "msg": "Line 180 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 184,
+        "type": "trailing_whitespace",
+        "msg": "Line 184 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 194,
+        "type": "trailing_whitespace",
+        "msg": "Line 194 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 198,
+        "type": "trailing_whitespace",
+        "msg": "Line 198 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 221,
+        "type": "trailing_whitespace",
+        "msg": "Line 221 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 225,
+        "type": "trailing_whitespace",
+        "msg": "Line 225 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 237,
+        "type": "trailing_whitespace",
+        "msg": "Line 237 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 242,
+        "type": "trailing_whitespace",
+        "msg": "Line 242 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 246,
+        "type": "trailing_whitespace",
+        "msg": "Line 246 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 248,
+        "type": "trailing_whitespace",
+        "msg": "Line 248 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 252,
+        "type": "trailing_whitespace",
+        "msg": "Line 252 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 255,
+        "type": "trailing_whitespace",
+        "msg": "Line 255 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 259,
+        "type": "trailing_whitespace",
+        "msg": "Line 259 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 262,
+        "type": "trailing_whitespace",
+        "msg": "Line 262 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 266,
+        "type": "trailing_whitespace",
+        "msg": "Line 266 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 277,
+        "type": "trailing_whitespace",
+        "msg": "Line 277 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 285,
+        "type": "trailing_whitespace",
+        "msg": "Line 285 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 296,
+        "type": "trailing_whitespace",
+        "msg": "Line 296 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 302,
+        "type": "trailing_whitespace",
+        "msg": "Line 302 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 309,
+        "type": "trailing_whitespace",
+        "msg": "Line 309 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 316,
+        "type": "trailing_whitespace",
+        "msg": "Line 316 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 320,
+        "type": "trailing_whitespace",
+        "msg": "Line 320 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 322,
+        "type": "trailing_whitespace",
+        "msg": "Line 322 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 335,
+        "type": "trailing_whitespace",
+        "msg": "Line 335 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 339,
+        "type": "trailing_whitespace",
+        "msg": "Line 339 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 345,
+        "type": "trailing_whitespace",
+        "msg": "Line 345 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 347,
+        "type": "trailing_whitespace",
+        "msg": "Line 347 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 357,
+        "type": "trailing_whitespace",
+        "msg": "Line 357 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 362,
+        "type": "trailing_whitespace",
+        "msg": "Line 362 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 366,
+        "type": "trailing_whitespace",
+        "msg": "Line 366 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 368,
+        "type": "trailing_whitespace",
+        "msg": "Line 368 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 368,
+        "type": "extra_spaces",
+        "msg": "Line 368 has extra spaces after comma"
+      },
+      {
+        "file": "daemon.py",
+        "line": 372,
+        "type": "trailing_whitespace",
+        "msg": "Line 372 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 375,
+        "type": "trailing_whitespace",
+        "msg": "Line 375 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 375,
+        "type": "extra_spaces",
+        "msg": "Line 375 has extra spaces after comma"
+      },
+      {
+        "file": "daemon.py",
+        "line": 386,
+        "type": "trailing_whitespace",
+        "msg": "Line 386 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 392,
+        "type": "trailing_whitespace",
+        "msg": "Line 392 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 396,
+        "type": "trailing_whitespace",
+        "msg": "Line 396 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 403,
+        "type": "trailing_whitespace",
+        "msg": "Line 403 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 409,
+        "type": "trailing_whitespace",
+        "msg": "Line 409 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 421,
+        "type": "trailing_whitespace",
+        "msg": "Line 421 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 426,
+        "type": "trailing_whitespace",
+        "msg": "Line 426 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 434,
+        "type": "trailing_whitespace",
+        "msg": "Line 434 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 441,
+        "type": "trailing_whitespace",
+        "msg": "Line 441 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 445,
+        "type": "trailing_whitespace",
+        "msg": "Line 445 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 447,
+        "type": "trailing_whitespace",
+        "msg": "Line 447 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 453,
+        "type": "trailing_whitespace",
+        "msg": "Line 453 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 458,
+        "type": "trailing_whitespace",
+        "msg": "Line 458 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 462,
+        "type": "trailing_whitespace",
+        "msg": "Line 462 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 469,
+        "type": "trailing_whitespace",
+        "msg": "Line 469 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 472,
+        "type": "trailing_whitespace",
+        "msg": "Line 472 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 472,
+        "type": "extra_spaces",
+        "msg": "Line 472 has extra spaces after comma"
+      },
+      {
+        "file": "daemon.py",
+        "line": 473,
+        "type": "line_too_long",
+        "msg": "Line 473 too long (90 > 88)"
+      },
+      {
+        "file": "daemon.py",
+        "line": 474,
+        "type": "trailing_whitespace",
+        "msg": "Line 474 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 478,
+        "type": "trailing_whitespace",
+        "msg": "Line 478 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 480,
+        "type": "trailing_whitespace",
+        "msg": "Line 480 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 485,
+        "type": "trailing_whitespace",
+        "msg": "Line 485 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 488,
+        "type": "trailing_whitespace",
+        "msg": "Line 488 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 494,
+        "type": "trailing_whitespace",
+        "msg": "Line 494 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 497,
+        "type": "trailing_whitespace",
+        "msg": "Line 497 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 500,
+        "type": "trailing_whitespace",
+        "msg": "Line 500 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 507,
+        "type": "trailing_whitespace",
+        "msg": "Line 507 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 515,
+        "type": "trailing_whitespace",
+        "msg": "Line 515 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 518,
+        "type": "line_too_long",
+        "msg": "Line 518 too long (91 > 88)"
+      },
+      {
+        "file": "daemon.py",
+        "line": 522,
+        "type": "trailing_whitespace",
+        "msg": "Line 522 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 526,
+        "type": "trailing_whitespace",
+        "msg": "Line 526 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 530,
+        "type": "trailing_whitespace",
+        "msg": "Line 530 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 534,
+        "type": "trailing_whitespace",
+        "msg": "Line 534 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 541,
+        "type": "trailing_whitespace",
+        "msg": "Line 541 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 543,
+        "type": "trailing_whitespace",
+        "msg": "Line 543 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 549,
+        "type": "trailing_whitespace",
+        "msg": "Line 549 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 552,
+        "type": "trailing_whitespace",
+        "msg": "Line 552 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 557,
+        "type": "trailing_whitespace",
+        "msg": "Line 557 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 567,
+        "type": "trailing_whitespace",
+        "msg": "Line 567 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 570,
+        "type": "trailing_whitespace",
+        "msg": "Line 570 has trailing whitespace"
+      },
+      {
+        "file": "daemon.py",
+        "line": 13,
+        "type": "unused_import",
+        "msg": "Unused import: Tuple"
+      },
+      {
+        "file": "daemon.py",
+        "line": 74,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'to_dict' missing docstring"
+      },
+      {
+        "file": "daemon.py",
+        "line": 91,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'to_dict' missing docstring"
+      },
+      {
+        "file": "daemon.py",
+        "line": 107,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'to_dict' missing docstring"
+      },
+      {
+        "file": "db_init.py",
+        "line": 13,
+        "type": "trailing_whitespace",
+        "msg": "Line 13 has trailing whitespace"
+      },
+      {
+        "file": "db_init.py",
+        "line": 23,
+        "type": "trailing_whitespace",
+        "msg": "Line 23 has trailing whitespace"
+      },
+      {
+        "file": "db_init.py",
+        "line": 34,
+        "type": "trailing_whitespace",
+        "msg": "Line 34 has trailing whitespace"
+      },
+      {
+        "file": "db_init.py",
+        "line": 47,
+        "type": "trailing_whitespace",
+        "msg": "Line 47 has trailing whitespace"
+      },
+      {
+        "file": "db_init.py",
+        "line": 3,
+        "type": "unused_import",
+        "msg": "Unused import: datetime"
+      },
+      {
+        "file": "db_init.py",
+        "line": 3,
+        "type": "unused_import",
+        "msg": "Unused import: timezone"
+      },
+      {
+        "file": "db_init.py",
+        "line": 9,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'init_database' missing docstring"
+      },
+      {
+        "file": "monitoring.py",
+        "line": 62,
+        "type": "line_too_long",
+        "msg": "Line 62 too long (102 > 88)"
+      },
+      {
+        "file": "monitoring.py",
+        "line": 94,
+        "type": "line_too_long",
+        "msg": "Line 94 too long (100 > 88)"
+      },
+      {
+        "file": "monitoring.py",
+        "line": 11,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'get_bot_status' missing docstring"
+      },
+      {
+        "file": "monitoring.py",
+        "line": 27,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'print_status' missing docstring"
+      },
+      {
+        "file": "monitoring.py",
+        "line": 42,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'print_recent_trades' missing docstring"
+      },
+      {
+        "file": "monitoring.py",
+        "line": 68,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'print_daily_stats' missing docstring"
+      },
+      {
+        "file": "monitoring.py",
+        "line": 98,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'main' missing docstring"
+      },
+      {
+        "file": "analytics.py",
+        "line": 61,
+        "type": "line_too_long",
+        "msg": "Line 61 too long (91 > 88)"
+      },
+      {
+        "file": "analytics.py",
+        "line": 69,
+        "type": "line_too_long",
+        "msg": "Line 69 too long (107 > 88)"
+      },
+      {
+        "file": "analytics.py",
+        "line": 78,
+        "type": "line_too_long",
+        "msg": "Line 78 too long (97 > 88)"
+      },
+      {
+        "file": "analytics.py",
+        "line": 1,
+        "type": "unused_import",
+        "msg": "Unused import: json"
+      },
+      {
+        "file": "analytics.py",
+        "line": 11,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'get_trades' missing docstring"
+      },
+      {
+        "file": "analytics.py",
+        "line": 23,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'calculate_sharpe' missing docstring"
+      },
+      {
+        "file": "analytics.py",
+        "line": 34,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'calculate_max_drawdown' missing docstring"
+      },
+      {
+        "file": "analytics.py",
+        "line": 51,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'calculate_win_rate' missing docstring"
+      },
+      {
+        "file": "analytics.py",
+        "line": 59,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'calculate_profit_factor' missing docstring"
+      },
+      {
+        "file": "analytics.py",
+        "line": 65,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'generate_report' missing docstring"
+      },
+      {
+        "file": "analytics.py",
+        "line": 88,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'print_report' missing docstring"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 53,
+        "type": "trailing_whitespace",
+        "msg": "Line 53 has trailing whitespace"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 58,
+        "type": "trailing_whitespace",
+        "msg": "Line 58 has trailing whitespace"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 63,
+        "type": "trailing_whitespace",
+        "msg": "Line 63 has trailing whitespace"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 87,
+        "type": "trailing_whitespace",
+        "msg": "Line 87 has trailing whitespace"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 109,
+        "type": "trailing_whitespace",
+        "msg": "Line 109 has trailing whitespace"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 113,
+        "type": "trailing_whitespace",
+        "msg": "Line 113 has trailing whitespace"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 134,
+        "type": "line_too_long",
+        "msg": "Line 134 too long (91 > 88)"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 136,
+        "type": "line_too_long",
+        "msg": "Line 136 too long (92 > 88)"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 6,
+        "type": "unused_import",
+        "msg": "Unused import: datetime"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 1,
+        "type": "unused_import",
+        "msg": "Unused import: asyncio"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 6,
+        "type": "unused_import",
+        "msg": "Unused import: timezone"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 33,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'test_config' missing docstring"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 42,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'test_state' missing docstring"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 74,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'test_trade' missing docstring"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 97,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'test_breaker' missing docstring"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 123,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'test_batch' missing docstring"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 143,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'test_learn' missing docstring"
+      },
+      {
+        "file": "test_bot.py",
+        "line": 166,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'run_all' missing docstring"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 35,
+        "type": "trailing_whitespace",
+        "msg": "Line 35 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 38,
+        "type": "trailing_whitespace",
+        "msg": "Line 38 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 54,
+        "type": "trailing_whitespace",
+        "msg": "Line 54 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 60,
+        "type": "trailing_whitespace",
+        "msg": "Line 60 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 66,
+        "type": "trailing_whitespace",
+        "msg": "Line 66 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 75,
+        "type": "trailing_whitespace",
+        "msg": "Line 75 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 77,
+        "type": "trailing_whitespace",
+        "msg": "Line 77 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 90,
+        "type": "trailing_whitespace",
+        "msg": "Line 90 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 93,
+        "type": "trailing_whitespace",
+        "msg": "Line 93 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 99,
+        "type": "trailing_whitespace",
+        "msg": "Line 99 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 107,
+        "type": "trailing_whitespace",
+        "msg": "Line 107 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 114,
+        "type": "trailing_whitespace",
+        "msg": "Line 114 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 123,
+        "type": "trailing_whitespace",
+        "msg": "Line 123 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 129,
+        "type": "trailing_whitespace",
+        "msg": "Line 129 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 134,
+        "type": "trailing_whitespace",
+        "msg": "Line 134 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 138,
+        "type": "line_too_long",
+        "msg": "Line 138 too long (89 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 147,
+        "type": "trailing_whitespace",
+        "msg": "Line 147 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 151,
+        "type": "trailing_whitespace",
+        "msg": "Line 151 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 161,
+        "type": "trailing_whitespace",
+        "msg": "Line 161 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 167,
+        "type": "trailing_whitespace",
+        "msg": "Line 167 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 175,
+        "type": "line_too_long",
+        "msg": "Line 175 too long (95 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 179,
+        "type": "trailing_whitespace",
+        "msg": "Line 179 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 185,
+        "type": "trailing_whitespace",
+        "msg": "Line 185 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 190,
+        "type": "trailing_whitespace",
+        "msg": "Line 190 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 193,
+        "type": "trailing_whitespace",
+        "msg": "Line 193 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 195,
+        "type": "line_too_long",
+        "msg": "Line 195 too long (95 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 196,
+        "type": "trailing_whitespace",
+        "msg": "Line 196 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 209,
+        "type": "trailing_whitespace",
+        "msg": "Line 209 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 212,
+        "type": "trailing_whitespace",
+        "msg": "Line 212 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 218,
+        "type": "trailing_whitespace",
+        "msg": "Line 218 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 220,
+        "type": "trailing_whitespace",
+        "msg": "Line 220 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 226,
+        "type": "trailing_whitespace",
+        "msg": "Line 226 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 237,
+        "type": "trailing_whitespace",
+        "msg": "Line 237 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 239,
+        "type": "trailing_whitespace",
+        "msg": "Line 239 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 245,
+        "type": "trailing_whitespace",
+        "msg": "Line 245 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 251,
+        "type": "trailing_whitespace",
+        "msg": "Line 251 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 253,
+        "type": "trailing_whitespace",
+        "msg": "Line 253 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 258,
+        "type": "trailing_whitespace",
+        "msg": "Line 258 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 262,
+        "type": "line_too_long",
+        "msg": "Line 262 too long (94 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 264,
+        "type": "trailing_whitespace",
+        "msg": "Line 264 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 269,
+        "type": "line_too_long",
+        "msg": "Line 269 too long (91 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 272,
+        "type": "trailing_whitespace",
+        "msg": "Line 272 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 278,
+        "type": "trailing_whitespace",
+        "msg": "Line 278 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 284,
+        "type": "trailing_whitespace",
+        "msg": "Line 284 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 287,
+        "type": "line_too_long",
+        "msg": "Line 287 too long (110 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 290,
+        "type": "line_too_long",
+        "msg": "Line 290 too long (89 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 293,
+        "type": "trailing_whitespace",
+        "msg": "Line 293 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 300,
+        "type": "trailing_whitespace",
+        "msg": "Line 300 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 316,
+        "type": "trailing_whitespace",
+        "msg": "Line 316 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 321,
+        "type": "trailing_whitespace",
+        "msg": "Line 321 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 326,
+        "type": "trailing_whitespace",
+        "msg": "Line 326 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 330,
+        "type": "trailing_whitespace",
+        "msg": "Line 330 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 333,
+        "type": "trailing_whitespace",
+        "msg": "Line 333 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 346,
+        "type": "trailing_whitespace",
+        "msg": "Line 346 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 356,
+        "type": "trailing_whitespace",
+        "msg": "Line 356 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 362,
+        "type": "trailing_whitespace",
+        "msg": "Line 362 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 364,
+        "type": "line_too_long",
+        "msg": "Line 364 too long (94 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 365,
+        "type": "trailing_whitespace",
+        "msg": "Line 365 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 370,
+        "type": "trailing_whitespace",
+        "msg": "Line 370 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 377,
+        "type": "trailing_whitespace",
+        "msg": "Line 377 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 389,
+        "type": "trailing_whitespace",
+        "msg": "Line 389 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 398,
+        "type": "trailing_whitespace",
+        "msg": "Line 398 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 403,
+        "type": "trailing_whitespace",
+        "msg": "Line 403 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 404,
+        "type": "line_too_long",
+        "msg": "Line 404 too long (98 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 412,
+        "type": "trailing_whitespace",
+        "msg": "Line 412 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 416,
+        "type": "trailing_whitespace",
+        "msg": "Line 416 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 418,
+        "type": "trailing_whitespace",
+        "msg": "Line 418 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 428,
+        "type": "line_too_long",
+        "msg": "Line 428 too long (113 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 430,
+        "type": "line_too_long",
+        "msg": "Line 430 too long (123 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 431,
+        "type": "line_too_long",
+        "msg": "Line 431 too long (99 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 437,
+        "type": "line_too_long",
+        "msg": "Line 437 too long (104 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 447,
+        "type": "trailing_whitespace",
+        "msg": "Line 447 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 462,
+        "type": "trailing_whitespace",
+        "msg": "Line 462 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 471,
+        "type": "trailing_whitespace",
+        "msg": "Line 471 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 475,
+        "type": "trailing_whitespace",
+        "msg": "Line 475 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 477,
+        "type": "trailing_whitespace",
+        "msg": "Line 477 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 483,
+        "type": "line_too_long",
+        "msg": "Line 483 too long (93 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 494,
+        "type": "trailing_whitespace",
+        "msg": "Line 494 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 497,
+        "type": "trailing_whitespace",
+        "msg": "Line 497 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 513,
+        "type": "trailing_whitespace",
+        "msg": "Line 513 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 518,
+        "type": "trailing_whitespace",
+        "msg": "Line 518 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 524,
+        "type": "trailing_whitespace",
+        "msg": "Line 524 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 530,
+        "type": "trailing_whitespace",
+        "msg": "Line 530 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 532,
+        "type": "trailing_whitespace",
+        "msg": "Line 532 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 534,
+        "type": "trailing_whitespace",
+        "msg": "Line 534 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 539,
+        "type": "line_too_long",
+        "msg": "Line 539 too long (94 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 540,
+        "type": "line_too_long",
+        "msg": "Line 540 too long (100 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 550,
+        "type": "trailing_whitespace",
+        "msg": "Line 550 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 555,
+        "type": "trailing_whitespace",
+        "msg": "Line 555 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 563,
+        "type": "trailing_whitespace",
+        "msg": "Line 563 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 565,
+        "type": "trailing_whitespace",
+        "msg": "Line 565 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 569,
+        "type": "line_too_long",
+        "msg": "Line 569 too long (137 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 570,
+        "type": "trailing_whitespace",
+        "msg": "Line 570 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 574,
+        "type": "trailing_whitespace",
+        "msg": "Line 574 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 578,
+        "type": "trailing_whitespace",
+        "msg": "Line 578 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 580,
+        "type": "trailing_whitespace",
+        "msg": "Line 580 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 583,
+        "type": "trailing_whitespace",
+        "msg": "Line 583 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 592,
+        "type": "trailing_whitespace",
+        "msg": "Line 592 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 597,
+        "type": "trailing_whitespace",
+        "msg": "Line 597 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 601,
+        "type": "trailing_whitespace",
+        "msg": "Line 601 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 606,
+        "type": "trailing_whitespace",
+        "msg": "Line 606 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 611,
+        "type": "trailing_whitespace",
+        "msg": "Line 611 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 613,
+        "type": "trailing_whitespace",
+        "msg": "Line 613 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 620,
+        "type": "trailing_whitespace",
+        "msg": "Line 620 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 623,
+        "type": "trailing_whitespace",
+        "msg": "Line 623 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 627,
+        "type": "trailing_whitespace",
+        "msg": "Line 627 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 630,
+        "type": "trailing_whitespace",
+        "msg": "Line 630 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 635,
+        "type": "trailing_whitespace",
+        "msg": "Line 635 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 639,
+        "type": "trailing_whitespace",
+        "msg": "Line 639 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 652,
+        "type": "trailing_whitespace",
+        "msg": "Line 652 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 656,
+        "type": "line_too_long",
+        "msg": "Line 656 too long (96 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 657,
+        "type": "line_too_long",
+        "msg": "Line 657 too long (105 > 88)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 658,
+        "type": "trailing_whitespace",
+        "msg": "Line 658 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 660,
+        "type": "trailing_whitespace",
+        "msg": "Line 660 has trailing whitespace"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 17,
+        "type": "unused_import",
+        "msg": "Unused import: sys"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 22,
+        "type": "unused_import",
+        "msg": "Unused import: hashlib"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 21,
+        "type": "unused_import",
+        "msg": "Unused import: time"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 650,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'main' missing docstring"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 221,
+        "type": "missing_docstring",
+        "msg": "ClassDef 'LoopVisitor' missing docstring"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 254,
+        "type": "missing_docstring",
+        "msg": "ClassDef 'ComplexityVisitor' missing docstring"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 227,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'visit_For' missing docstring"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 259,
+        "type": "missing_docstring",
+        "msg": "FunctionDef 'visit_FunctionDef' missing docstring"
+      }
+    ],
+    "performance": [
+      {
+        "file": "daemon.py",
+        "line": 236,
+        "type": "nested_loops",
+        "msg": "Deeply nested loop (depth: 3)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 285,
+        "type": "dangerous_function",
+        "msg": "Use of exec/eval (dangerous) on line 285"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 289,
+        "type": "sql_injection",
+        "msg": "Possible SQL injection on line 289"
+      }
+    ],
+    "security": [
+      {
+        "file": "daemon.py",
+        "line": 236,
+        "type": "nested_loops",
+        "msg": "Deeply nested loop (depth: 3)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 285,
+        "type": "dangerous_function",
+        "msg": "Use of exec/eval (dangerous) on line 285"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 289,
+        "type": "sql_injection",
+        "msg": "Possible SQL injection on line 289"
+      }
+    ],
+    "complexity": [
+      {
+        "file": "daemon.py",
+        "line": 236,
+        "type": "nested_loops",
+        "msg": "Deeply nested loop (depth: 3)"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 285,
+        "type": "dangerous_function",
+        "msg": "Use of exec/eval (dangerous) on line 285"
+      },
+      {
+        "file": "code_doctor_ultimate.py",
+        "line": 289,
+        "type": "sql_injection",
+        "msg": "Possible SQL injection on line 289"
+      }
+    ]
+  },
+  "total_issues": 333
+}

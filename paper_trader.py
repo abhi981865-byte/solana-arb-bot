@@ -15,20 +15,7 @@ MAX_LEARNINGS = 50
 
 def _default_state():
     return {
-        "balance_usd": STARTING_BALANCE_USD,
-        "starting_balance_usd": STARTING_BALANCE_USD,
-        "trades": [],
-        "total_trades": 0,
-        "total_profit_usd": 0.0,
-        "failed_trades": 0,
-        "partial_fill_trades": 0,
-        "consecutive_losses": 0,
-        "circuit_breaker_tripped": False,
-        "circuit_breaker_tripped_at": None,
-        "telegram_last_update_id": 0,
-        "chat_history": [],
-        "learnings": [],
-    }
+        "balance_usd": STARTING_BALANCE_USD, "starting_balance_usd": STARTING_BALANCE_USD, "trades": [], "total_trades": 0, "total_profit_usd": 0.0, "failed_trades": 0, "partial_fill_trades": 0, "consecutive_losses": 0, "circuit_breaker_tripped": False, "circuit_breaker_tripped_at": None, "telegram_last_update_id": 0, "chat_history": [], "learnings": [], }
 
 
 def load_state():
@@ -62,15 +49,7 @@ def execute_paper_trade(state, opportunity):
         return None
     net_spread_pct = opportunity["net_spread_pct"]
     base_record = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "pair": opportunity["pair"],
-        "buy_dex": opportunity["buy_dex"],
-        "sell_dex": opportunity["sell_dex"],
-        "buy_price": opportunity["buy_price"],
-        "sell_price": opportunity["sell_price"],
-        "trade_size_usd": round(safe_trade_size, 2),
-        "net_spread_pct": net_spread_pct,
-    }
+        "timestamp": datetime.now(timezone.utc).isoformat(), "pair": opportunity["pair"], "buy_dex": opportunity["buy_dex"], "sell_dex": opportunity["sell_dex"], "buy_price": opportunity["buy_price"], "sell_price": opportunity["sell_price"], "trade_size_usd": round(safe_trade_size, 2), "net_spread_pct": net_spread_pct, }
     if random.random() < FILL_FAILURE_RATE:
         loss_usd = -0.002
         trade_record = {**base_record, "status": "failed_fill", "profit_usd": loss_usd}
@@ -148,12 +127,4 @@ def get_summary(state):
     total = max(state["total_trades"], 1)
     win_trades = state["total_trades"] - state.get("failed_trades", 0)
     return {
-        "balance_usd": state["balance_usd"],
-        "total_trades": state["total_trades"],
-        "failed_trades": state.get("failed_trades", 0),
-        "partial_fill_trades": state.get("partial_fill_trades", 0),
-        "fill_success_rate_pct": round((win_trades / total) * 100, 1),
-        "total_profit_usd": state["total_profit_usd"],
-        "roi_pct": round(roi_pct, 3),
-        "circuit_breaker_tripped": state.get("circuit_breaker_tripped", False),
-    }
+        "balance_usd": state["balance_usd"], "total_trades": state["total_trades"], "failed_trades": state.get("failed_trades", 0), "partial_fill_trades": state.get("partial_fill_trades", 0), "fill_success_rate_pct": round((win_trades / total) * 100, 1), "total_profit_usd": state["total_profit_usd"], "roi_pct": round(roi_pct, 3), "circuit_breaker_tripped": state.get("circuit_breaker_tripped", False), }

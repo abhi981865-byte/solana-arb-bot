@@ -13,15 +13,7 @@ def get_bot_status():
     summary = get_summary(state)
     pid_file = os.path.join(Config.DATA_DIR, "daemon.pid")
     return {
-        "running": os.path.exists(pid_file),
-        "balance_usd": summary["balance_usd"],
-        "roi_pct": summary["roi_pct"],
-        "total_trades": summary["total_trades"],
-        "failed_trades": summary["failed_trades"],
-        "fill_success_rate": summary["fill_success_rate_pct"],
-        "circuit_breaker_tripped": summary["circuit_breaker_tripped"],
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-    }
+        "running": os.path.exists(pid_file), "balance_usd": summary["balance_usd"], "roi_pct": summary["roi_pct"], "total_trades": summary["total_trades"], "failed_trades": summary["failed_trades"], "fill_success_rate": summary["fill_success_rate_pct"], "circuit_breaker_tripped": summary["circuit_breaker_tripped"], "timestamp": datetime.now(timezone.utc).isoformat(), }
 
 
 def print_status():
@@ -73,10 +65,7 @@ def print_daily_stats():
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT date(timestamp) as day, COUNT(*) as total,
-         SUM(CASE WHEN status='filled' THEN 1 ELSE 0 END) as success,
-         SUM(CASE WHEN status='failed_fill' THEN 1 ELSE 0 END) as failed,
-         SUM(profit_usd) as total_profit
+        SELECT date(timestamp) as day, COUNT(*) as total, SUM(CASE WHEN status='filled' THEN 1 ELSE 0 END) as success, SUM(CASE WHEN status='failed_fill' THEN 1 ELSE 0 END) as failed, SUM(profit_usd) as total_profit
         FROM trades GROUP BY date(timestamp) ORDER BY day DESC LIMIT 14
     """)
     rows = cursor.fetchall()

@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Code Doctor Report</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #333; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 20px 0; }
+        .stat-box { background: #f0f0f0; padding: 15px; border-radius: 5px; text-align: center; }
+        .stat-box h3 { margin: 0; color: #666; }
+        .stat-box .number { font-size: 24px; font-weight: bold; color: #333; }
+        .issues { margin-top: 30px; }
+        .issue-category { margin: 20px 0; }
+        .issue-category h3 { border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .issue { background: #fafafa; padding: 10px; margin: 10px 0; border-left: 4px solid #ff6b6b; }
+        .issue.warning { border-left-color: #ffd93d; }
+        .issue.info { border-left-color: #6bcf7f; }
+        .timestamp { color: #999; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Code Doctor Report</h1>
+        <p class="timestamp">2026-08-29 21:01:05</p>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <h3>Files Checked</h3>
+                <div class="number">11</div>
+            </div>
+            <div class="stat-box">
+                <h3>Total Issues</h3>
+                <div class="number">333</div>
+            </div>
+            <div class="stat-box">
+                <h3>Issues Fixed</h3>
+                <div class="number">11</div>
+            </div>
+        </div>
+        
+        <div class="issues">
+            <h2>Issue Breakdown</h2>
+            
+        </div>
+    </div>
+</body>
+</html>

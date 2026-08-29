@@ -2439,7 +2439,7 @@
       "profit_usd": 10.8299
     }
   ],
-  "total_trades": 203,
+  "total_trades": 227,
   "total_profit_usd": 437.222,
   "failed_trades": 67,
   "partial_fill_trades": 24,
@@ -2528,5 +2528,9 @@
       "at": "2026-08-24T04:11:05.000136+00:00",
       "note": "Circuit breaker tripped after consecutive losses on: JUP/USDC, WIF/USDC. Check if these pairs/DEXs have a recurring fill-failure pattern before re-enabling at full size."
     }
-  ]
+  ],
+  "last_update": "2026-08-29T20:51:24.603011",
+  "opportunities_found": 184,
+  "successful_trades": 24,
+  "total_profit": 24.10426229508203
 }

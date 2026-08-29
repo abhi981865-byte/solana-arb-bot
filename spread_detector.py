@@ -19,7 +19,7 @@ class ArbitrageOpportunity:
     trade_size_usd: float
     confidence: float
     timestamp: float
-    
+
     def to_dict(self):
         return asdict(self)
 
@@ -30,14 +30,12 @@ class SpreadDetector:
         self.min_profit_pct = Config.MIN_PROFIT_PCT
         self.gas_cost_usd = Config.get_gas_cost_usd()
         self.opportunities_found = 0
-        
+
     async def analyze_pair(self, token_a, token_b):
         opportunities = []
         trade_size = Config.ESTIMATED_TRADE_SIZE_USD
         price_ab, price_ba = await asyncio.gather(
-            self.scanner.get_pair_price(token_a, token_b, trade_size),
-            self.scanner.get_pair_price(token_b, token_a, trade_size),
-            return_exceptions=True
+            self.scanner.get_pair_price(token_a, token_b, trade_size), self.scanner.get_pair_price(token_b, token_a, trade_size), return_exceptions=True
         )
         if isinstance(price_ab, Exception) or isinstance(price_ba, Exception):
             return opportunities
@@ -50,15 +48,12 @@ class SpreadDetector:
         net_spread_pct = gross_spread_pct - gas_pct
         if net_spread_pct >= self.min_profit_pct:
             opp = ArbitrageOpportunity(
-                f"{token_a}/{token_b}", "jupiter_aggregated", "jupiter_aggregated",
-                price_ba.price, price_ab.price, round(gross_spread_pct, 4),
-                round(net_spread_pct, 4), trade_size,
-                min(price_ab.confidence, price_ba.confidence), time.time()
+                f"{token_a}/{token_b}", "jupiter_aggregated", "jupiter_aggregated", price_ba.price, price_ab.price, round(gross_spread_pct, 4), round(net_spread_pct, 4), trade_size, min(price_ab.confidence, price_ba.confidence), time.time()
             )
             opportunities.append(opp)
             self.opportunities_found += 1
         return opportunities
-        
+
     async def scan_all_pairs(self):
         all_opportunities = []
         print("\n🔍 Scanning for arbitrage opportunities...")
@@ -76,7 +71,7 @@ class SpreadDetector:
         print(f"\n📊 Scanned {len(Config.PAIRS)} pairs in {elapsed:.2f}s")
         print(f"📊 Found {len(all_opportunities)} raw opportunities")
         return all_opportunities
-        
+
     def filter_opportunities(self, opportunities, min_confidence=0.5, max_spread_pct=50.0):
         filtered = []
         for opp in opportunities:
@@ -90,13 +85,10 @@ class SpreadDetector:
             filtered.append(opp)
         filtered.sort(key=lambda x: x.net_spread_pct, reverse=True)
         return filtered
-        
+
     def get_stats(self):
         return {
-            "opportunities_found": self.opportunities_found,
-            "min_profit_threshold": self.min_profit_pct,
-            "gas_cost_usd": self.gas_cost_usd,
-        }
+            "opportunities_found": self.opportunities_found, "min_profit_threshold": self.min_profit_pct, "gas_cost_usd": self.gas_cost_usd, }
 
 
 def format_opportunity(opp):
