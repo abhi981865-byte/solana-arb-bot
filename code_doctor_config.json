@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "rules": {
+    "max_line_length": 88,
+    "max_cyclomatic_complexity": 10,
+    "security_checks": {
+      "check_hardcoded_keys": true,
+      "check_eval_exec": true,
+      "check_sql_injection": true
+    },
+    "auto_fix": {
+      "remove_unused_imports": true,
+      "format_pep8": true,
+      "fix_syntax_errors": true
+    }
+  },
+  "ignore_patterns": [
+    "venv/*",
+    ".git/*",
+    "__pycache__/*"
+  ]
+}
