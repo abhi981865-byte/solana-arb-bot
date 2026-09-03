@@ -1,11 +1,4 @@
-from telegram_notifier import TelegramNotifier, AlertLevel
-from telegram_config import TelegramConfig
 
-# Initialize notifier at startup
-notifier = TelegramNotifier(
-    bot_token=TelegramConfig.BOT_TOKEN,
-    chat_id=TelegramConfig.CHAT_ID
-)
 #!/usr/bin/env python3
 """
 Solana DEX Arbitrage Bot - Main Daemon
