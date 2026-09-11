@@ -2,10 +2,7 @@ name: Solana ARB Bot Daemon
 
 on:
   schedule:
-    # Run every 2 minutes
     - cron: '*/2 * * * *'
-  
-  # Also allow manual trigger
   workflow_dispatch:
 
 jobs:
@@ -13,85 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
       
-      - name: Install dependencies
-        run: |
-          pip install httpx python-dotenv requests
+      - run: pip install httpx python-dotenv requests
       
-      - name: Configure Git
-        run: |
-          git config --global user.name "bot"
-          git config --global user.email "bot@example.com"
+      - run: python3 daemon.py || true
       
-      - name: Pull latest state
-        run: |
-          git pull origin main || true
-      
-      - name: Run one bot cycle
+      - run: git add -A && git commit -m "Bot cycle $(date)" && git push || true
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          python3 << 'PYTHON'
-          import sys
-          sys.path.insert(0, '.')
-          
-          from config import Config
-          from paper_trader import load_state, save_state, process_opportunities, get_summary
-          import time
-          import logging
-          
-          logging.basicConfig(level=logging.INFO)
-          logger = logging.getLogger("GitHubBot")
-          
-          logger.info("🤖 Starting one bot cycle from GitHub Actions...")
-          
-          # Load current state
-          state = load_state()
-          
-          # Simulate one opportunity
-          opportunities = [{
-              "pair": "SOL/USDC",
-              "buy_dex": "Raydium",
-              "sell_dex": "Orca",
-              "buy_price": 180.50,
-              "sell_price": 181.00,
-              "trade_size_usd": 100.0,
-              "net_spread_pct": 0.28
-          }]
-          
-          # Process trades
-          state, executed = process_opportunities(opportunities)
-          
-          # Log summary
-          summary = get_summary(state)
-          logger.info(f"📊 Cycle Complete!")
-          logger.info(f"   Balance: ${summary['balance_usd']:.2f}")
-          logger.info(f"   ROI: {summary['roi_pct']:+.3f}%")
-          logger.info(f"   Trades: {summary['total_trades']}")
-          
-          # Save state
-          save_state(state)
-          PYTHON
-      
-      - name: Commit and push results
-        run: |
-          git add -A
-          git commit -m "🤖 Bot cycle $(date +'%Y-%m-%d %H:%M:%S')" || true
-          git push origin main || true
-      
-      - name: Upload logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: bot-logs
-          path: bot.log
-          retention-days: 7
 
