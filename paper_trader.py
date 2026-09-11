@@ -1,9 +1,12 @@
 import json
 import os
+import sqlite3
 import random
 from datetime import datetime, timezone
 
 STATE_PATH = os.path.join(os.path.dirname(__file__), "data", "state.json")
+DB_PATH = os.path.join(os.path.dirname(__file__), "data", "arb_bot.db")
+
 STARTING_BALANCE_USD = 1000.0
 MAX_TRADE_PCT_OF_BALANCE = 0.10
 FILL_FAILURE_RATE = 0.35
@@ -15,7 +18,18 @@ MAX_LEARNINGS = 50
 
 def _default_state():
     return {
-        "balance_usd": STARTING_BALANCE_USD, "starting_balance_usd": STARTING_BALANCE_USD, "trades": [], "total_trades": 0, "total_profit_usd": 0.0, "failed_trades": 0, "partial_fill_trades": 0, "consecutive_losses": 0, "circuit_breaker_tripped": False, "circuit_breaker_tripped_at": None, "telegram_last_update_id": 0, "chat_history": [], "learnings": [], }
+        "balance_usd": STARTING_BALANCE_USD,
+        "starting_balance_usd": STARTING_BALANCE_USD,
+        "trades": [],
+        "total_trades": 0,
+        "total_profit_usd": 0.0,
+        "failed_trades": 0,
+        "partial_fill_trades": 0,
+        "consecutive_losses": 0,
+        "circuit_breaker_tripped": False,
+        "circuit_breaker_tripped_at": None,
+        "learnings": [],
+    }
 
 
 def load_state():
@@ -43,13 +57,54 @@ def save_state(state):
     os.replace(temp_path, STATE_PATH)
 
 
+def _save_to_sqlite(trade_record):
+    """NEW: Save trade to SQLite database (for monitoring.py & analytics.py)"""
+    try:
+        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            INSERT INTO trades 
+            (timestamp, pair, buy_dex, sell_dex, buy_price, sell_price, 
+             trade_size_usd, net_spread_pct, status, profit_usd)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            trade_record.get("timestamp"),
+            trade_record.get("pair"),
+            trade_record.get("buy_dex"),
+            trade_record.get("sell_dex"),
+            trade_record.get("buy_price"),
+            trade_record.get("sell_price"),
+            trade_record.get("trade_size_usd"),
+            trade_record.get("net_spread_pct"),
+            trade_record.get("status"),
+            trade_record.get("profit_usd")
+        ))
+        
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"⚠️  SQLite write failed: {e}")
+
+
 def execute_paper_trade(state, opportunity):
     safe_trade_size = min(opportunity["trade_size_usd"], state["balance_usd"] * MAX_TRADE_PCT_OF_BALANCE)
     if safe_trade_size < 1:
         return None
+    
     net_spread_pct = opportunity["net_spread_pct"]
     base_record = {
-        "timestamp": datetime.now(timezone.utc).isoformat(), "pair": opportunity["pair"], "buy_dex": opportunity["buy_dex"], "sell_dex": opportunity["sell_dex"], "buy_price": opportunity["buy_price"], "sell_price": opportunity["sell_price"], "trade_size_usd": round(safe_trade_size, 2), "net_spread_pct": net_spread_pct, }
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "pair": opportunity["pair"],
+        "buy_dex": opportunity["buy_dex"],
+        "sell_dex": opportunity["sell_dex"],
+        "buy_price": opportunity["buy_price"],
+        "sell_price": opportunity["sell_price"],
+        "trade_size_usd": round(safe_trade_size, 2),
+        "net_spread_pct": net_spread_pct,
+    }
+    
     if random.random() < FILL_FAILURE_RATE:
         loss_usd = -0.002
         trade_record = {**base_record, "status": "failed_fill", "profit_usd": loss_usd}
@@ -60,7 +115,11 @@ def execute_paper_trade(state, opportunity):
         state["consecutive_losses"] += 1
         state["trades"].append(trade_record)
         state["trades"] = state["trades"][-500:]
+        
+        _save_to_sqlite(trade_record)
+        
         return trade_record
+    
     is_partial = random.random() < PARTIAL_FILL_RATE
     if is_partial:
         profit_usd = round((net_spread_pct / 100) * safe_trade_size * (1 - PARTIAL_FILL_PENALTY_PCT), 4)
@@ -69,16 +128,21 @@ def execute_paper_trade(state, opportunity):
     else:
         profit_usd = round((net_spread_pct / 100) * safe_trade_size, 4)
         status = "filled"
+    
     trade_record = {**base_record, "status": status, "profit_usd": profit_usd}
     state["balance_usd"] = round(state["balance_usd"] + profit_usd, 4)
     state["total_profit_usd"] = round(state["total_profit_usd"] + profit_usd, 4)
     state["total_trades"] += 1
     state["trades"].append(trade_record)
     state["trades"] = state["trades"][-500:]
+    
     if profit_usd < 0:
         state["consecutive_losses"] += 1
     else:
         state["consecutive_losses"] = 0
+    
+    _save_to_sqlite(trade_record)
+    
     return trade_record
 
 
@@ -127,4 +191,12 @@ def get_summary(state):
     total = max(state["total_trades"], 1)
     win_trades = state["total_trades"] - state.get("failed_trades", 0)
     return {
-        "balance_usd": state["balance_usd"], "total_trades": state["total_trades"], "failed_trades": state.get("failed_trades", 0), "partial_fill_trades": state.get("partial_fill_trades", 0), "fill_success_rate_pct": round((win_trades / total) * 100, 1), "total_profit_usd": state["total_profit_usd"], "roi_pct": round(roi_pct, 3), "circuit_breaker_tripped": state.get("circuit_breaker_tripped", False), }
+        "balance_usd": state["balance_usd"],
+        "total_trades": state["total_trades"],
+        "failed_trades": state.get("failed_trades", 0),
+        "partial_fill_trades": state.get("partial_fill_trades", 0),
+        "fill_success_rate_pct": round((win_trades / total) * 100, 1),
+        "total_profit_usd": state["total_profit_usd"],
+        "roi_pct": round(roi_pct, 3),
+        "circuit_breaker_tripped": state.get("circuit_breaker_tripped", False),
+    }
