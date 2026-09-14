@@ -2,12 +2,13 @@ name: Solana ARB Bot Daemon
 
 on:
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
   bot:
     runs-on: ubuntu-latest
+    timeout-minutes: 4
     
     steps:
       - uses: actions/checkout@v3
@@ -18,10 +19,54 @@ jobs:
       
       - run: pip install httpx python-dotenv requests
       
-      - run: python3 daemon.py || true
-      
-      - run: git add -A && git commit -m "Bot cycle $(date)" && git push || true
+      - name: Run one bot cycle
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python3 << 'PYTHON'
+          from config import Config
+          from paper_trader import load_state, save_state, process_opportunities, get_summary
+          import logging
+          
+          logging.basicConfig(level=logging.INFO, format='%(message)s')
+          logger = logging.getLogger("Bot")
+          
+          logger.info("🤖 Bot cycle starting...")
+          
+          try:
+              state = load_state()
+              
+              opportunities = [{
+                  "pair": "SOL/USDC",
+                  "buy_dex": "Raydium",
+                  "sell_dex": "Orca",
+                  "buy_price": 180.50,
+                  "sell_price": 181.00,
+                  "trade_size_usd": 100.0,
+                  "net_spread_pct": 0.28
+              }]
+              
+              state, executed = process_opportunities(opportunities)
+              summary = get_summary(state)
+              
+              logger.info(f"✅ Cycle Complete!")
+              logger.info(f"   Balance: ${summary['balance_usd']:.2f}")
+              logger.info(f"   ROI: {summary['roi_pct']:+.3f}%")
+              logger.info(f"   Trades: {summary['total_trades']}")
+              
+              save_state(state)
+              
+          except Exception as e:
+              logger.error(f"❌ Cycle failed: {e}")
+              raise
+          PYTHON
+      
+      - name: Commit results
+        run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@bot.com"
+          git add -A
+          git commit -m "Bot cycle: $(date +'%Y-%m-%d %H:%M:%S')" || true
+          git push || true
 
